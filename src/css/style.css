@@ -86,6 +86,11 @@ img {
   margin-bottom: 0px;
   margin-right: 15px;
 }
+
+.movie-rating{
+  margin-right: 7px;
+}
+
 .dark-light {
   position: fixed;
   bottom: 50px;
@@ -821,6 +826,13 @@ body.light-mode .video-bg:before {
   border-radius: 6px;
   margin-right: 12px;
   flex-shrink: 0;
+}
+.app-card .movie-rating > svg {
+  fill: #FFD700;
+  width: 18px;
+  margin-right: 5px;
+  margin-bottom: 4px;
+  vertical-align: middle;
 }
 .app-card + .app-card {
   margin-left: 20px;

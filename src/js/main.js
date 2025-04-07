@@ -80,6 +80,12 @@ function renderMovies(movieList) {
                     </span>
                     <div class="app-card__subtext">${movie.description}</div>
                     <div class="app-card-buttons">
+                        <div class="movie-rating">
+                          <svg class="svg-stars" viewBox="0 0 24 24" stroke-linejoin="round">
+                            <path d="M12 .587l3.668 7.431 8.2 1.193-5.934 5.787 1.402 8.179L12 18.897l-7.336 3.866 1.402-8.179L.132 9.211l8.2-1.193z"/>
+                          </svg>
+                          ${movie.rating} / 5
+                        </div>
                         <button class="content-button status-button">Watch Trailer</button>
                         <div class="menu"></div>
                     </div>
@@ -92,24 +98,99 @@ function renderMovies(movieList) {
     });
 }
 
-// Sample movies list (9 movies, 3 per category)
+
+$('.menu-link-main').on('click', function(e) {
+  e.preventDefault();
+  // Remove "is-active" from both all-movies and header links
+  $('.menu-link-main').removeClass('is-active');
+  $('.main-header-link').removeClass('is-active');
+  
+  // Set the clicked "All Movies" as active
+  $(this).addClass('is-active');
+  
+  // Clear the movie list container
+  const container = document.querySelector('.movie-list');
+  container.innerHTML = '';
+  
+  // Render all movies
+  renderMovies(movies);
+});
+
+$('.side-menu a').on('click', function(e) {
+  e.preventDefault();
+  // Get the text of the clicked link (e.g., "Action", "Comedy", "Drama")
+  const category = $(this).text().trim();
+  
+  // Clear the movie list container before rendering the filtered movies
+  const container = document.querySelector('.movie-list');
+  container.innerHTML = '';
+  
+  // Filter the movies array by the selected category
+  const filteredMovies = movies.filter((movie) => movie.category === category);
+  
+  // Render the filtered movies
+  renderMovies(filteredMovies);
+});
+
+// Filter movies by status when clicking on the header links: Popular, Latest, Upcoming
+$('.main-header-link').on('click', function(e) {
+  e.preventDefault();
+  // Remove active class and set the clicked one as active
+  $('.main-header-link').removeClass("is-active");
+  $(this).addClass("is-active");
+  
+  // Get the status from the clicked link's text
+  const status = $(this).text().trim();
+  
+  // Clear the movie list container before rendering the filtered movies
+  const container = document.querySelector('.movie-list');
+  container.innerHTML = '';
+  
+  // Filter the movies array by the selected status
+  const filteredMovies = movies.filter((movie) => movie.status === status);
+  
+  // Render the filtered movies
+  renderMovies(filteredMovies);
+});
+
+$('.menu-link-main').on('click', function(e) {
+  e.preventDefault();
+  // Remove "is-active" class from all menu-link-main elements if desired
+  $('.menu-link-main').removeClass('is-active');
+  $(this).addClass('is-active');
+  
+  // Clear the movie list container
+  const container = document.querySelector('.movie-list');
+  container.innerHTML = '';
+  
+  // Render all movies
+  renderMovies(movies);
+});
+
+// Sample movies list (9 movies, 3 per category) with status and rating properties
 const movies = [
   // Action
   {
     title: 'Heart of Stone (2023)',
     category: 'Action',
+    status: 'Popular',
+    rating: 4.5,
     poster: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIPXZNJnBJl8qYCmMb4BmGGH5KplZzfYRv7o_Tn5HLLZw3kuMGmHyJqFy9u8xg3LPboXA&usqp=CAU',
-    description: 'Gal Gadot stars as a global intelligence operative on a mission to protect a powerful AI system. The film received mixed reviews but was noted for its action sequences.'
+    description: 'Gal Gadot stars as a global intelligence operative on a mission to protect a powerful AI system. The film received good reviews and was noted for its action sequences.'
   },
   {
     title: 'The Fall Guy (2024)',
     category: 'Action',
+    status: 'Latest',
+    rating: 4.0,
     poster: 'https://m.media-amazon.com/images/I/71ic9Y0ECYL.jpg',
     description: 'Starring Ryan Gosling and Emily Blunt, this action-comedy pays tribute to stunt performers. It has been praised for its humor and practical stunts.'
   },
   {
     title: 'The Beekeeper (2024)',
     category: 'Action',
+    status: 'Latest',
+    rating: 3.8,
     poster: 'https://lh3.googleusercontent.com/proxy/YFn3AAC_N_EcWBUODxGNyQpG6Kef8lqoonOLHsL7n7h-Bqsj8FWNEnGeDuBT5r38ITnMHNvVbIGpyfXRPXtQ4p_R5Bhjlg',
     description: 'Jason Statham plays a retired operative seeking revenge against online scammers. The film has been noted for its action sequences and Statham\'s performance.'
   },
@@ -117,41 +198,53 @@ const movies = [
   {
     title: 'No Hard Feelings (2023)',
     category: 'Comedy',
+    status: 'Popular',
+    rating: 4.2,
     poster: 'https://lh4.googleusercontent.com/proxy/r_l7FGsaenInk9FKJRDCmHFenovmQ-thIzS8x5HFAWw3-ZgMq9n-Pq1UNhHVjk7KOjaTeccnePSOI7nvCwYWFMMaPw6x7gQYig61j_o',
     description: 'Jennifer Lawrence stars as a woman hired to date a wealthy couple\'s inexperienced son. The film garnered positive reviews for its humor and Lawrence\'s performance.'
   },
   {
     title: 'Four Mothers (2025)',
     category: 'Comedy',
+    status: 'Upcoming',
+    rating: "?",
     poster: 'https://m.media-amazon.com/images/M/MV5BZDIwY2U0ODMtNzIzNC00YmFlLTgxZjYtMjQ2Y2RhYTUxZDE0XkEyXkFqcGc@._V1_.jpg',
-    description: 'This Irish comedy follows a novelist caring for his elderly mother and her friends. It has been well-received for its witty dialogue and engaging storyline.'
+    description: 'This Irish comedy follows a novelist caring for his elderly mother and her friends.'
   },
   {
     title: 'One of Them Days (2025)',
     category: 'Comedy',
+    status: 'Upcoming',
+    rating: "?",
     poster: 'https://www.movieposters.com/cdn/shop/files/one-of-them-days_zddhjktv.jpg?v=1736361167',
-    description: 'Featuring Keke Palmer and SZA, this comedy follows two roommates hustling to pay rent. The film has received mixed reviews, with some praising its humor and performances.'
+    description: 'Featuring Keke Palmer and SZA, this comedy follows two roommates hustling to pay rent.'
   },
   // Thriller
   {
     title: 'The Killer (2023)',
     category: 'Thriller',
+    status: 'Popular',
+    rating: 4.7,
     poster: 'https://i.ebayimg.com/images/g/R4cAAOSwqHplQH2E/s-l400.jpg',
     description: 'Directed by David Fincher, this film stars Michael Fassbender as an assassin entangled in an international vendetta after a botched job. It received positive reviews for its direction and performances.'
   },
   {
     title: 'Rebel Ridge (2024)',
     category: 'Thriller',
+    status: 'Latest',
+    rating: 4.0,
     poster: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGD77OenH_pBYUabyt3E1Qz6wZ2maxGNEcCQ&s',
     description: 'This thriller features Aaron Pierre as a military veteran confronting a corrupt small-town sheriff. The film has been praised for its intense action sequences and compelling narrative.'
   },
   {
     title: 'Trap (2024)',
     category: 'Thriller',
+    status: 'Latest',
+    rating: 3.2,
     poster: 'https://lh5.googleusercontent.com/proxy/GgmDH-AX4QdThj8dha7OEuxyhMF2kzLv7ha7Kexa584IgWizvhJGLluiRpvd-fIvBvA0WWCFU-2dKFsbMNeZjO9ymOB9yA',
     description: 'Starring Josh Hartnett, this film follows a father who discovers that a concert is a setup to capture him, revealing his secret identity as a notorious serial killer. The movie has received mixed reviews, with some critics appreciating its unexpected twists.'
   }
 ];
 
-// Render all movies by category
+// Render all movies by category (existing function remains unchanged)
 renderMovies(movies);
