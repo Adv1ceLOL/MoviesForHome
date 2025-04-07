@@ -167,6 +167,29 @@ $('.menu-link-main').on('click', function(e) {
   renderMovies(movies);
 });
 
+// Listen for input events on the search-bar input field
+$('.search-bar input').on('input', function () {
+  // Get the current input value and convert to lowercase for case-insensitive comparison
+  const query = $(this).val().trim().toLowerCase();
+  
+  // Filter the movies array by matching the query with the movie title
+  const filteredMovies = movies.filter(movie =>
+    movie.title.toLowerCase().includes(query)
+  );
+  
+  // Clear the movie list container
+  const container = document.querySelector('.movie-list');
+  container.innerHTML = '';
+  
+  // Render the filtered movies
+  renderMovies(filteredMovies);
+});
+
+$('.header-profile').on('click', function(e) {
+  // Remove preventDefault for navigation or manually set location:
+  window.location.href = $(this).attr('href');
+});
+
 // Sample movies list (9 movies, 3 per category) with status and rating properties
 const movies = [
   // Action
