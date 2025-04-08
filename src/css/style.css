@@ -77,6 +77,11 @@ body {
   background: transparent;
   border: none;
   cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.back-to-index:hover {
+  transform: scale(1.5);
+  opacity: 0.9;
 }
 .login-form {
   background-image: url("https://www.transparenttextures.com/patterns/cubes.png"), linear-gradient(to right top, #cf4af3, #e73bd7, #f631bc, #fd31a2, #ff3a8b, #ff4b78, #ff5e68, #ff705c, #ff8c51, #ffaa49, #ffc848, #ffe652);
@@ -456,6 +461,12 @@ body.light-mode .video-bg:before {
   flex-grow: 1;
 }
 
+.main-container-comments {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
 .menu-link-main {
   text-decoration: none;
   color: var(--theme-color);
@@ -500,6 +511,41 @@ body.light-mode .video-bg:before {
   transition: 0.3s;
   background-color: var(--overlay-bg);
 }
+
+.content-wrapper-comments {
+  display: flex;
+  flex-direction: column;
+  color: var(--theme-color);
+  padding: 20px 40px;
+  height: 100%;
+  overflow: auto;
+  background-color: var(--theme-bg-color);
+}
+@media screen and (max-width: 510px) {
+  .content-wrapper-comments {
+    padding: 20px;
+  }
+}
+.content-wrapper-header-comments {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  background-image: url("https://www.transparenttextures.com/patterns/cubes.png"), linear-gradient(to right top, #cf4af3, #e73bd7, #f631bc, #fd31a2, #ff3a8b, #ff4b78, #ff5e68, #ff705c, #ff8c51, #ffaa49, #ffc848, #ffe652);
+  border-radius: 14px;
+  padding: 20px 40px;
+}
+@media screen and (max-width: 415px) {
+  .ontent-wrapper-header-comments {
+    padding: 20px;
+  }
+}
+.content-wrapper-comments.overlay {
+  pointer-events: none;
+  transition: 0.3s;
+  background-color: var(--overlay-bg);
+}
+
 
 .overlay-app {
   width: 100%;

@@ -190,6 +190,190 @@ $('.header-profile').on('click', function(e) {
   window.location.href = $(this).attr('href');
 });
 
+// Handler for "Comments"
+$('.menu-link.notify').on('click', function(e) {
+  e.preventDefault();
+  $('.menu-link').removeClass('is-active');
+  $(this).addClass('is-active');
+  
+  // Hide the movies container and show the comments container along with its wrappers
+  $('.main-container').hide();
+  $('.main-container-comments, .content-wrapper-comments, .comments-container').show();
+  
+  // Clear the comments container then render comments
+  const container = document.querySelector('.comments-container');
+  container.innerHTML = '';
+  renderComments();
+});
+
+// Handler for "Movies" (links that are not .notify)
+$('.menu-link').not('.notify').on('click', function(e) {
+  e.preventDefault();
+  $('.menu-link').removeClass('is-active');
+  $(this).addClass('is-active');
+  
+  // Hide the comments container and its wrapper, show the movies container again
+  $('.main-container-comments, .content-wrapper-comments').hide();
+  $('.main-container').show();
+  
+  // Clear and render movies
+  const container = document.querySelector('.movie-list');
+  container.innerHTML = '';
+  renderMovies(movies);
+});
+
+// Updated renderComments function using "comments-container"
+function renderComments() {
+  const container = document.querySelector('.comments-container');
+  container.innerHTML = '';
+
+  // Group the users by the movie they commented on
+  const groupedComments = {};
+  users.forEach((user) => {
+    if (!groupedComments[user.commentedMovie]) {
+      groupedComments[user.commentedMovie] = [];
+    }
+    groupedComments[user.commentedMovie].push(user);
+  });
+
+  // For each movie with comments, render one container that aggregates its comments
+  Object.keys(groupedComments).forEach((movieTitle) => {
+    const commentsHTML = groupedComments[movieTitle].map((user) => `
+      <li class="adobe-product">
+        <div class="products">
+          <!-- Show the user profile image -->
+          <img src="${user.profileImage}" alt="${user.name}" style="width: 28px; height: 28px; border-radius: 50%; margin-right: 16px;" />
+          <!-- Show the user name -->
+          <span>${user.name}</span>
+        </div>
+        <span class="status">
+          <!-- Dynamically set the status-circle color based on the review -->
+          <span class="status-circle" style="background-color: ${user.review === 'good' ? '#3bf083' : user.review === 'medium' ? '#ffeb3b' : '#ff5858'};"></span>
+          ${user.comment}
+        </span>
+        <div class="button-wrapper">
+          <div class="menu">
+            <button class="dropdown">
+              <ul>
+                <li><a href="#">View All Comments</a></li>
+                <li><a href="#">Edit Comments</a></li>
+                <li><a href="#">Delete Comment</a></li>
+              </ul>
+            </button>
+          </div>
+        </div>
+      </li>
+    `).join("");
+    
+    container.innerHTML += `
+      <div class="content-section">
+        <div class="content-section-title">Comments for ${movieTitle}</div>
+        <ul>
+          ${commentsHTML}
+        </ul>
+      </div>
+    `;
+  });
+}
+
+$('.menu-link.notify').on('click', function(e) {
+  e.preventDefault();
+  // Remove active state from all links and add it to this one
+  $('.menu-link').removeClass('is-active');
+  $(this).addClass('is-active');
+  
+  // Clear the movie list container
+  const container = document.querySelector('.movie-list');
+  container.innerHTML = '';
+  
+  // Render the comments view
+  renderComments();
+});
+
+// Array of users with comment details and review quality
+const users = [
+    {
+        id: 1,
+        name: 'John Doe',
+        profileImage: '../assets/images/logo.jpg',
+        commentedMovie: 'Heart of Stone (2023)',
+        comment: 'Awesome movie! Loved it.',
+        review: 'good'
+    },
+    {
+        id: 2,
+        name: 'Jane Smith',
+        profileImage: '../assets/images/logo.jpg',
+        commentedMovie: 'The Fall Guy (2024)',
+        comment: 'Not my cup of tea.',
+        review: 'bad'
+    },
+    {
+        id: 3,
+        name: 'Alice Johnson',
+        profileImage: '../assets/images/logo.jpg',
+        commentedMovie: 'The Killer (2023)',
+        comment: 'Incredible storytelling!',
+        review: 'good'
+    },
+    {
+        id: 4,
+        name: 'Michael Brown',
+        profileImage: '../assets/images/logo.jpg',
+        commentedMovie: 'Heart of Stone (2023)',
+        comment: 'Stunning visuals!',
+        review: 'good'
+    },
+    {
+        id: 5,
+        name: 'Emily Clark',
+        profileImage: '../assets/images/logo.jpg',
+        commentedMovie: 'Heart of Stone (2023)',
+        comment: 'The story left to be desired',
+        review: 'bad'
+    },
+    {
+        id: 6,
+        name: 'Robert Wilson',
+        profileImage: '../assets/images/logo.jpg',
+        commentedMovie: 'The Fall Guy (2024)',
+        comment: 'Great storyline.',
+        review: 'good'
+    },
+    {
+        id: 7,
+        name: 'Susan Davis',
+        profileImage: '../assets/images/logo.jpg',
+        commentedMovie: 'The Fall Guy (2024)',
+        comment: 'Entertaining with a twist.',
+        review: 'medium'
+    },
+    {
+        id: 8,
+        name: 'David Miller',
+        profileImage: '../assets/images/logo.jpg',
+        commentedMovie: 'The Killer (2023)',
+        comment: 'An edge-of-your-seat thriller.',
+        review: 'medium'
+    },
+    {
+        id: 9,
+        name: 'Laura Garcia',
+        profileImage: '../assets/images/logo.jpg',
+        commentedMovie: 'The Killer (2023)',
+        comment: 'Intense and gripping.',
+        review: 'good'
+    },
+    {
+        id: 10,
+        name: 'Kevin Anderson',
+        profileImage: '../assets/images/logo.jpg',
+        commentedMovie: 'The Killer (2023)',
+        comment: 'Masterful direction.',
+        review: 'good'
+    }
+];
+
 // Sample movies list (9 movies, 3 per category) with status and rating properties
 const movies = [
   // Action
