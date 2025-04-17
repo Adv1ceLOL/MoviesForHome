@@ -28,7 +28,7 @@
             <div class="search-bar">
                 <input type="text" placeholder="Search movies...">
             </div>
-            <div class="header-profile" href="login.html">
+            <div class="header-profile">
                 <img class="profile-img" src="../assets/images/logo.jpg" alt="">
             </div>
         </div>
@@ -75,6 +75,32 @@
             </div>
             <div class="main-container-comments" style="display: none;">
                 <div class="content-wrapper-comments">
+                    <button class="add-comment-btn" >Add Comment</button>
+                    
+                    <div class="add-comment-popup">
+                      <form class="add-comment-form">
+                        <button type="button" class="close-add-comment">&times;</button>
+                        <label>
+                          Comment:
+                          <input type="text" name="comment" required>
+                        </label>
+                        <label>
+                          Movie:
+                          <select name="movie" required>
+                            <!-- Options will be filled by JS -->
+                          </select>
+                        </label>
+                        <label>
+                          Rating:
+                          <select name="review" required>
+                            <option value="good">Good</option>
+                            <option value="medium">Medium</option>
+                            <option value="bad">Bad</option>
+                          </select>
+                        </label>
+                        <button type="submit" class="content-button status-button">Submit</button>
+                      </form>
+                    </div>
                     <div class="comments-container" style="display: none;">
                         <!-- Comments will be rendered here -->
                     </div>

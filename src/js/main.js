@@ -185,9 +185,8 @@ $('.search-bar input').on('input', function () {
   renderMovies(filteredMovies);
 });
 
-$('.header-profile').on('click', function(e) {
-  // Remove preventDefault for navigation or manually set location:
-  window.location.href = $(this).attr('href');
+$('.profile-img').on('click', function(e) {
+  window.location.href = 'login.html';
 });
 
 // Handler for "Comments"
@@ -287,6 +286,43 @@ $('.menu-link.notify').on('click', function(e) {
   container.innerHTML = '';
   
   // Render the comments view
+  renderComments();
+});
+
+function fillMovieOptions() {
+  const select = document.querySelector('.add-comment-form select[name="movie"]');
+  if (!select) return;
+  select.innerHTML = movies.map(m => `<option value="${m.title}">${m.title}</option>`).join('');
+}
+
+// Show popup
+$(document).on('click', '.add-comment-btn', function() {
+  fillMovieOptions();
+  $('.add-comment-popup').css('display', 'flex').hide().fadeIn(150);});
+
+// Hide popup
+$(document).on('click', '.close-add-comment', function() {
+  $('.add-comment-popup').fadeOut(150);
+});
+
+// Submit new comment
+$(document).on('submit', '.add-comment-form', function(e) {
+  e.preventDefault();
+  const comment = this.comment.value.trim();
+  const commentedMovie = this.movie.value;
+  const review = this.review.value;
+  if (!comment || !commentedMovie || !review) return;
+
+  users.push({
+    id: users.length + 1,
+    name: 'Advice',
+    profileImage: '../assets/images/logo.jpg',
+    commentedMovie,
+    comment,
+    review
+  });
+
+  $('.add-comment-popup').fadeOut(150);
   renderComments();
 });
 
