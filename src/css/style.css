@@ -20,6 +20,7 @@
   --search-bg: #14162b;
   --overlay-bg: rgba(36, 39, 59, 0.3);
   --scrollbar-bg: rgb(1 2 3 / 40%);
+  --view-comments:rgba(18, 21, 24, 0.811);
 }
 
 .light-mode {
@@ -36,6 +37,7 @@
   --hover-menu-bg: rgba(255 255 255 / 35%);
   --scrollbar-bg: rgb(255 253 253 / 57%);
   --content-title-color: --theme-color;
+  --view-comments:rgba(203, 225, 248, 0.811);
 }
 
 html {
@@ -142,7 +144,8 @@ img {
 }
 
 .movie-rating{
-  margin-right: 7px;
+  margin-right: 25px;
+  margin-top: 15px;
 }
 
 .dark-light {
@@ -684,11 +687,11 @@ body.light-mode .video-bg:before {
   max-width: 350px;
 }
 
-.content-button {
-  background-color: #3a6df0;
+.view-comments-btn {
+  background-color: var(--view-comments);
   border: none;
   padding: 8px 26px;
-  color: #fff;
+  color: var(--theme-color);
   border-radius: 20px;
   margin-top: 16px;
   cursor: pointer;
@@ -1017,6 +1020,33 @@ body.light-mode .video-bg:before {
   padding: 20px;
   cursor: pointer;
   transition: 0.3s ease;
+  height: 350px;
+  box-sizing: border-box;
+}
+
+.app-card__subtext {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6em;
+  margin-top: 20px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 20px;
+  flex-grow: 1;
+  overflow-y: auto;
+  max-height: 150px; /* Adjust this value to fit your card layout */
+  /* Optional: for a nice scrollbar look */
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-bg) var(--content-bg);
+}
+
+/* Optional: Webkit scrollbar styling */
+.app-card__subtext::-webkit-scrollbar {
+  width: 6px;
+  border-radius: 10px;
+}
+.app-card__subtext::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-bg);
+  border-radius: 10px;
 }
 .app-card:hover {
   transform: scale(1.02);

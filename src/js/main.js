@@ -96,8 +96,7 @@ function renderMovies(movieList) {
                           </svg>
                           ${movie.rating} / 5
                         </div>
-                        <button class="content-button status-button">Watch Trailer</button>
-                    </div>
+                        <button class="view-comments-btn" data-movie-title="${movie.title}">View Comments</button>                    </div>
                 </div>
                 `).join('')}
             </div>
@@ -107,6 +106,19 @@ function renderMovies(movieList) {
     });
 }
 
+$(document).on('click', '.view-comments-btn', function() {
+  const movieTitle = $(this).data('movie-title');
+  // Hide movies, show comments section
+  $('.main-container').hide();
+  $('.main-container-comments, .content-wrapper-comments, .comments-container').show();
+
+  // Set header to "Comments"
+  $('.menu-link').removeClass('is-active');
+  $('.menu-link.notify').addClass('is-active');
+
+  // Render only comments for this movie
+  renderComments(movieTitle);
+});
 
 $('.menu-link-main').on('click', function(e) {
   e.preventDefault();
@@ -231,7 +243,7 @@ $('.menu-link').not('.notify').on('click', function(e) {
 });
 
 // Updated renderComments function using "comments-container"
-function renderComments() {
+function renderComments(filterMovieTitle) {
   const container = document.querySelector('.comments-container');
   container.innerHTML = '';
 
@@ -244,18 +256,20 @@ function renderComments() {
     groupedComments[user.commentedMovie].push(user);
   });
 
-  // For each movie with comments, render one container that aggregates its comments
-  Object.keys(groupedComments).forEach((movieTitle) => {
+  // Decide which movies to show comments for
+  const movieTitles = filterMovieTitle
+    ? [filterMovieTitle]
+    : Object.keys(groupedComments);
+
+  movieTitles.forEach((movieTitle) => {
+    if (!groupedComments[movieTitle]) return; // No comments for this movie
     const commentsHTML = groupedComments[movieTitle].map((user) => `
       <li class="adobe-product">
         <div class="products">
-          <!-- Show the user profile image -->
           <img src="${user.profileImage}" alt="${user.name}" style="width: 28px; height: 28px; border-radius: 50%; margin-right: 16px;" />
-          <!-- Show the user name -->
           <span>${user.name}</span>
         </div>
         <span class="status">
-          <!-- Dynamically set the status-circle color based on the review -->
           <span class="status-circle" style="background-color: ${user.review === 'good' ? '#3bf083' : user.review === 'medium' ? '#ffeb3b' : '#ff5858'};"></span>
           ${user.comment}
         </span>
@@ -271,7 +285,6 @@ function renderComments() {
         </div>
       </li>
     `).join("");
-    
     container.innerHTML += `
       <div class="content-section">
         <div class="content-section-title">Comments for ${movieTitle}</div>
