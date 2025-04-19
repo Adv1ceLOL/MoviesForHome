@@ -12,13 +12,23 @@ $(function () {
  });
 });
 
-const dropdowns = document.querySelectorAll(".dropdown");
-dropdowns.forEach((dropdown) => {
- dropdown.addEventListener("click", (e) => {
+$(document).on('click', '.dropdown', function(e) {
   e.stopPropagation();
-  dropdowns.forEach((c) => c.classList.remove("is-active"));
-  dropdown.classList.add("is-active");
- });
+  // Close other open dropdowns
+  $('.dropdown').not(this).removeClass('is-active');
+  // Toggle this dropdown
+  $(this).toggleClass('is-active');
+});
+
+// Close dropdowns when clicking outside
+$(document).on('click', function() {
+  $('.dropdown').removeClass('is-active');
+});
+
+$(document).on('click', '.flag-comment-link', function(e) {
+  e.preventDefault();
+  const $toast = $('.toast-flag');
+  $toast.stop(true, true).fadeIn(200).delay(2000).fadeOut(400);
 });
 
 $(".search-bar input")
@@ -87,7 +97,6 @@ function renderMovies(movieList) {
                           ${movie.rating} / 5
                         </div>
                         <button class="content-button status-button">Watch Trailer</button>
-                        <div class="menu"></div>
                     </div>
                 </div>
                 `).join('')}
@@ -254,8 +263,7 @@ function renderComments() {
           <div class="menu">
             <button class="dropdown">
               <ul>
-                <li><a href="#">View All Comments</a></li>
-                <li><a href="#">Edit Comments</a></li>
+                <li><a href="#" class="flag-comment-link">Flag Comment</a></li>
                 <li><a href="#">Delete Comment</a></li>
               </ul>
             </button>

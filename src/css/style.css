@@ -14,8 +14,8 @@
   --content-title-color: #999ba5;
   --content-bg: rgb(146 151 179 / 13%);
   --button-inactive: rgb(249 250 251 / 55%);
-  --dropdown-bg: #21242d;
-  --dropdown-hover: rgb(42 46 60);
+  --dropdown-bg: #21242cb8;
+  --dropdown-hover: rgb(32, 35, 44);
   --popup-bg: rgb(22 25 37);
   --search-bg: #14162b;
   --overlay-bg: rgba(36, 39, 59, 0.3);
@@ -847,7 +847,7 @@ body.light-mode .video-bg:before {
   position: absolute;
   background: var(--dropdown-bg);
   height: 110px;
-  width: 120px;
+  width: fit-content;
   right: 0;
   top: 20px;
   pointer-events: none;
@@ -868,6 +868,21 @@ body.light-mode .video-bg:before {
 }
 .dropdown.is-active ul li:hover {
   background-color: var(--dropdown-hover);
+}
+
+.toast-flag {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  padding: 16px 28px;
+  background: var(--dropdown-bg);
+  color: var(--theme-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+  font-size: 16px;
 }
 
 .button-wrapper {
