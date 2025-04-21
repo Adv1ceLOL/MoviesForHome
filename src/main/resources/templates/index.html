@@ -29,7 +29,7 @@
                 <input type="text" placeholder="Search movies...">
             </div>
             <div class="header-profile">
-                <img class="profile-img" src="../assets/images/logo.jpg" alt="">
+                <img class="profile-img" src="../static/images/logo.jpg" alt="">
             </div>
         </div>
         <div class="wrapper">
@@ -69,7 +69,32 @@
               </div>
               <div class="content-wrapper">
                 <div class="movie-list">
-                  <!-- Movies will be rendered here -->
+                    <!-- Messaggio di avviso se non ci sono film -->
+                    <div th:if="${#maps.isEmpty(genre2movies)}">
+                        <span>No movies available. Come back later!</span>
+                    </div>
+                    <!-- Visualizza film raggruppati per genere se disponibili -->
+                    <div th:each="entry : ${genre2movies}" class="content-section">
+                      <div class="content-section-title" th:text="${entry.key}">Genre</div>
+                      <div class="apps-card">
+                          <div class="app-card" th:each="movie : ${entry.value}">
+                              <span>
+                                  <img th:src="@{/${movie.imagePath}}" th:alt="${movie.title}" class="movie-poster" />
+                                  <span th:text="${movie.title}">Movie Title</span>
+                              </span>
+                              <div class="app-card__subtext" th:text="${movie.description}">Movie description...</div>
+                              <div class="app-card-buttons">
+                                  <div class="movie-rating">
+                                      <svg class="svg-stars" viewBox="0 0 24 24" stroke-linejoin="round">
+                                          <path d="M12 .587l3.668 7.431 8.2 1.193-5.934 5.787 1.402 8.179L12 18.897l-7.336 3.866 1.402-8.179L.132 9.211l8.2-1.193z"/>
+                                      </svg>
+                                      <span th:text="${#numbers.formatDecimal(avgRatings[movie.id], 1, 1)} + ' / 5' ?: 'N/A'">N/A</span>
+                                  </div>
+                                  <button class="view-comments-btn" th:attr="data-movie-title=${movie.title}">View Comments</button>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
                 </div>
               </div>
             </div>
@@ -109,7 +134,6 @@
         </div>
     </div>
     <div class="overlay-app"></div>
-    <script src="js/main.js"></script>
     <div class="toast-flag">
       Thanks for the feedback
     </div>

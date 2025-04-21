@@ -1,6 +1,9 @@
 package com.ethicalhacking.filecmr.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,5 +50,24 @@ public class ReviewService {
 
     public List<Review> getReviewsByRating(int rating) {
         return reviewRepository.findByRating(rating);
+    }
+    
+    
+    public Map<Long, Double> getAverageRatingsForMovies(List<Long> movieIds) {
+        List<Object[]> rawResults = reviewRepository.findAverageRatingsForMovieIds(movieIds);
+
+        // Converto in mappa Movie ID → Media (null se non presente)
+        Map<Long, Double> avgMap = rawResults.stream().collect(Collectors.toMap(
+            row -> (Long) row[0],
+            row -> (Double) row[1]
+        ));
+
+        // Includo anche i film che non hanno recensioni
+        Map<Long, Double> completeMap = new HashMap<>();
+        for (Long id : movieIds) {
+            completeMap.put(id, avgMap.getOrDefault(id, null));
+        }
+
+        return completeMap;
     }
 }

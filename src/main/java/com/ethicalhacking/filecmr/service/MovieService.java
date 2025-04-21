@@ -1,6 +1,7 @@
 package com.ethicalhacking.filecmr.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,18 @@ public class MovieService {
     }
 
     public void saveMovie(Movie movie) {
+        movieRepository.save(movie);
+    }
+
+    public Movie saveMovieArtifact(Movie movie) {
+        return movieRepository.save(movie);
+    }
+
+    public void saveMovieWithCoverImage(Movie movie) {
+        Movie savedMovie = saveMovieArtifact(movie);
+        ///images/movie_{id}/image_{id}.png(id=${movie.id})
+        String imagePath = "images/movie_" + savedMovie.getId() + "/image_" + savedMovie.getId() + ".png";
+        movie.setCoverImagePath(imagePath);
         movieRepository.save(movie);
     }
 

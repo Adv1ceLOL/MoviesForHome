@@ -10,10 +10,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 @Data
 @Entity
+@Table(name = "movies")
 public class Movie {
     
     @Id
@@ -35,7 +37,10 @@ public class Movie {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "createdAt")
+    @Column(name = "cover_image_path")
+    private String coverImagePath;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "movie", orphanRemoval = true, cascade = CascadeType.ALL)
