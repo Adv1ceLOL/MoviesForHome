@@ -29,7 +29,7 @@
                 <input type="text" placeholder="Search movies...">
             </div>
             <div class="header-profile">
-                <img class="profile-img" src="../static/images/logo.jpg" alt="">
+                <img class="profile-img" src="/images/logo.jpg" alt="">
             </div>
         </div>
         <div class="wrapper">
@@ -99,7 +99,7 @@
                             <ul>
                                 <li class="adobe-product" th:each="user : ${entry.value}">
                                     <div class="products">
-                                        <img th:src="@{${user.userProfileImage}}" th:alt="${user.username}" style="width: 28px; height: 28px; border-radius: 50%; margin-right: 16px;" />
+                                        <img th:src="${user.userProfileImage.startsWith('https://')} ? ${user.userProfileImage} : @{/${user.userProfileImage}}" th:alt="${user.username}" style="width: 28px; height: 28px; border-radius: 50%; margin-right: 16px;" />
                                         <span th:text="${user.username}">User Name</span>
                                     </div>
                                     <span class="status">

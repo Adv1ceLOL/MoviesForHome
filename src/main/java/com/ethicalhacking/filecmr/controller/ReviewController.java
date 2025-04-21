@@ -60,7 +60,7 @@ public class ReviewController {
                 if (user != null) {
                     comments.add(new UserCommentDTO(
                         user.getUsername(),
-                        user.getProfilePicturePath(),
+                        user.getProfileImagePath(),
                         review.getRating(),
                         review.getContent()
                     ));
@@ -92,7 +92,7 @@ public class ReviewController {
         if (user != null) {
             comments.add(new UserCommentDTO(
                 user.getUsername(),
-                user.getProfilePicturePath(),
+                user.getProfileImagePath(),
                 review.getRating(),
                 review.getContent()
             ));

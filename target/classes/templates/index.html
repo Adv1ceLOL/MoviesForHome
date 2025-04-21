@@ -79,7 +79,7 @@
                       <div class="apps-card">
                           <div class="app-card" th:each="movie : ${entry.value}">
                               <span>
-                                  <img th:src="@{/${movie.imagePath}}" th:alt="${movie.title}" class="movie-poster" />
+                                  <img th:src="${movie.coverImagePath.startsWith('https://')} ? ${movie.coverImagePath} : @{/${movie.coverImagePath}}" th:alt="${movie.title}" class="movie-poster" />
                                   <span th:text="${movie.title}">Movie Title</span>
                               </span>
                               <div class="app-card__subtext" th:text="${movie.description}">Movie description...</div>
