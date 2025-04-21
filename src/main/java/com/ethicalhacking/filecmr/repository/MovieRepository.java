@@ -1,6 +1,7 @@
 package com.ethicalhacking.filecmr.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,5 +16,11 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     List<Movie> findByYear(String year);
     List<Movie> findByTitleContainingIgnoreCase(String title);
     List<Movie> findByDirectorContainingIgnoreCase(String director);
+    
+    @Query("SELECT m FROM Movie m LEFT JOIN FETCH m.reviews r LEFT JOIN FETCH r.user WHERE m.id = :movieId")
+    Optional<Movie> findByIdWithReviewsAndUsers(@Param("movieId") Long movieId);
+
+    @Query("SELECT DISTINCT m FROM Movie m LEFT JOIN FETCH m.reviews r LEFT JOIN FETCH r.user")
+    List<Movie> findAllWithReviewsAndUsers();
     
 }

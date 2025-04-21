@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoviesForHome</title>
+    <title>MoviesForHome - Movies</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -22,8 +22,8 @@
         <div class="header">
             <div class="menu-circle"></div>
             <div class="header-menu">
-                <a class="menu-link is-active" href="#">Movies</a>
-                <a class="menu-link notify" href="#">Comments</a>
+                <a class="menu-link is-active" href="/movies">Movies</a>
+                <a class="menu-link notify" href="/comments">Comments</a>
             </div>
             <div class="search-bar">
                 <input type="text" placeholder="Search movies...">
@@ -90,7 +90,7 @@
                                       </svg>
                                       <span th:text="${#numbers.formatDecimal(avgRatings[movie.id], 1, 1)} + ' / 5' ?: 'N/A'">N/A</span>
                                   </div>
-                                  <button class="view-comments-btn" th:attr="data-movie-title=${movie.title}">View Comments</button>
+                                  <a class="view-comments-btn" th:href="@{/comments/{movieId} (movieId=${movie.id})}">View Comments</a>
                               </div>
                           </div>
                       </div>

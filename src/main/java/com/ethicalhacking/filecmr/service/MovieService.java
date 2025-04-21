@@ -1,6 +1,7 @@
 package com.ethicalhacking.filecmr.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,14 @@ public class MovieService {
 
     public List<Movie> getAllMovies() {
         return movieRepository.findAll();
+    }
+
+    public List<Movie> getAllMoviesWithReviewsAndUsers() {
+        return movieRepository.findAllWithReviewsAndUsers();
+    }
+
+    public Optional<Movie> getMovieByIdWithReviewsAndUsers(Long movieId) {
+        return movieRepository.findByIdWithReviewsAndUsers(movieId);
     }
 
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoviesForHome - Movies</title>
+    <title>MoviesForHome - Comments</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -58,47 +58,7 @@
                     </div>
                 </div>
             </div>
-            <div class="main-container">
-              <div class="main-header">
-                <a class="menu-link-main is-active" href="#">All Movies</a>
-                <div class="header-menu">
-                  <a class="main-header-link" href="#">Popular</a>
-                  <a class="main-header-link" href="#">Latest</a>
-                  <a class="main-header-link" href="#">Upcoming</a>
-                </div>
-              </div>
-              <div class="content-wrapper">
-                <div class="movie-list">
-                    <!-- Messaggio di avviso se non ci sono film -->
-                    <div th:if="${#maps.isEmpty(genre2movies)}">
-                        <span>No movies available. Come back later!</span>
-                    </div>
-                    <!-- Visualizza film raggruppati per genere se disponibili -->
-                    <div th:each="entry : ${genre2movies}" class="content-section">
-                      <div class="content-section-title" th:text="${entry.key}">Genre</div>
-                      <div class="apps-card">
-                          <div class="app-card" th:each="movie : ${entry.value}">
-                              <span>
-                                  <img th:src="@{/${movie.imagePath}}" th:alt="${movie.title}" class="movie-poster" />
-                                  <span th:text="${movie.title}">Movie Title</span>
-                              </span>
-                              <div class="app-card__subtext" th:text="${movie.description}">Movie description...</div>
-                              <div class="app-card-buttons">
-                                  <div class="movie-rating">
-                                      <svg class="svg-stars" viewBox="0 0 24 24" stroke-linejoin="round">
-                                          <path d="M12 .587l3.668 7.431 8.2 1.193-5.934 5.787 1.402 8.179L12 18.897l-7.336 3.866 1.402-8.179L.132 9.211l8.2-1.193z"/>
-                                      </svg>
-                                      <span th:text="${#numbers.formatDecimal(avgRatings[movie.id], 1, 1)} + ' / 5' ?: 'N/A'">N/A</span>
-                                  </div>
-                                  <a class="view-comments-btn" th:href="@{/comments/{movieId} (movieId=${movie.id})}">View Comments</a>
-                              </div>
-                          </div>
-                      </div>
-                    </div>
-                </div>
-              </div>
-            </div>
-            <div class="main-container-comments" style="display: none;">
+            <div class="main-container-comments">
                 <div class="content-wrapper-comments">
                     <button class="add-comment-btn" >Add Comment</button>
                     
@@ -126,8 +86,41 @@
                         <button type="submit" class="content-button status-button">Submit</button>
                       </form>
                     </div>
-                    <div class="comments-container" style="display: none;">
-                        <!-- Comments will be rendered here -->
+                    <div class="comments-container">
+                        <!-- Messaggio di avviso se non ci sono commenti -->
+                        <div th:if="${#maps.isEmpty(groupedComments)}">
+                            <span>No comments available. Come back later!</span>
+                        </div>
+                        <!-- Visualizza commenti raggruppati per film -->
+                        <div class="content-section" th:each="entry : ${groupedComments}">
+                            <div class="content-section-title">
+                                Comments for <span th:text="${entry.key}">Movie Title</span>
+                            </div>
+                            <ul>
+                                <li class="adobe-product" th:each="user : ${entry.value}">
+                                    <div class="products">
+                                        <img th:src="@{${user.userProfileImage}}" th:alt="${user.username}" style="width: 28px; height: 28px; border-radius: 50%; margin-right: 16px;" />
+                                        <span th:text="${user.username}">User Name</span>
+                                    </div>
+                                    <span class="status">
+                                        <span class="status-circle"
+                                              th:style="'background-color:' + (${user.rating} >= 4 ? '#3bf083' : (${user.rating} >= 2 ? '#ffeb3b' : '#ff5858'))">
+                                        </span>
+                                        <span th:text="${user.comment}">Comment text</span>
+                                    </span>
+                                    <div class="button-wrapper">
+                                        <div class="menu">
+                                            <button class="dropdown">
+                                                <ul>
+                                                    <li><a href="#" class="flag-comment-link">Flag Comment</a></li>
+                                                    <li><a href="#">Delete Comment</a></li>
+                                                </ul>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>          
