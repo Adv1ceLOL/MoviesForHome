@@ -1008,6 +1008,33 @@ body.light-mode .video-bg:before {
   flex-wrap: wrap;
   width: calc(100% + 20px);
 }
+.app-card {
+  width: calc(33.3% - 20px);
+  margin-bottom: 20px;
+}
+
+.apps-card .app-card {
+  margin-left: 0;
+}
+
+.apps-card .app-card:not(:nth-child(3n+1)) {
+  margin-left: 20px;
+}
+
+@media screen and (max-width: 1110px) {
+  .app-card {
+    width: calc(50% - 20px);
+  }
+}
+@media screen and (max-width: 565px) {
+  .app-card {
+    width: calc(100% - 20px);
+    margin-top: 20px;
+  }
+  .app-card + .app-card {
+    margin-left: 0;
+  }
+}
 
 .app-card {
   display: flex;
@@ -1065,9 +1092,7 @@ body.light-mode .video-bg:before {
   margin-bottom: 4px;
   vertical-align: middle;
 }
-.app-card + .app-card {
-  margin-left: 20px;
-}
+
 .app-card span {
   display: flex;
   align-items: center;
