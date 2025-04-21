@@ -105,6 +105,7 @@ public class ReviewController {
     }
 
     model.addAttribute("groupedComments", groupedComments);
+    
     return "comments";
 }
     
