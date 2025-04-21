@@ -43,6 +43,14 @@ public class MovieService {
         return movieRepository.findById(id).orElse(null);
     }
 
+    public List<Movie> getMoviesByTitleContaining(String title) {
+        return movieRepository.findByTitleContainingIgnoreCase(title);
+    }
+
+    public List<Movie> getMoviesByGenre(String genre) {
+        return movieRepository.findByGenre(genre);
+    }
+
     public List<Movie> getAllMovies() {
         return movieRepository.findAll();
     }

@@ -36,7 +36,7 @@ public class HomeController {
 
         model.addAttribute("genre2movies", groupedMovies);
         model.addAttribute("avgRatings", avgRatings);
-        
+
         List<String> genres = movies.stream()
             .map(Movie::getGenre)
             .distinct()

@@ -73,6 +73,8 @@ public class ReviewController {
         }
 
         model.addAttribute("groupedComments", groupedComments);
+        model.addAttribute("moviesWithComments", movies);
+
         return "comments";
     }
 
