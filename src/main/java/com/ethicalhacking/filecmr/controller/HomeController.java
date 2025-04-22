@@ -45,6 +45,7 @@ public class HomeController {
             .collect(Collectors.toList());
 
         model.addAttribute("genres", genres);
+        model.addAttribute("newMovie", new Movie());
 
         return "index";
     }

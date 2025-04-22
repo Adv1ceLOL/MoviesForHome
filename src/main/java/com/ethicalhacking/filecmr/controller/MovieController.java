@@ -1,18 +1,22 @@
 package com.ethicalhacking.filecmr.controller;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ethicalhacking.filecmr.model.Movie;
 import com.ethicalhacking.filecmr.service.MovieService;
@@ -51,6 +55,7 @@ public class MovieController {
             .distinct()
             .collect(Collectors.toList());
 
+        model.addAttribute("newMovie", new Movie());
         model.addAttribute("genres", genres);
 
         return "index";
@@ -75,6 +80,7 @@ public class MovieController {
             .distinct()
             .collect(Collectors.toList());
 
+        model.addAttribute("newMovie", new Movie());
         model.addAttribute("genres", genres);
 
         return "index";
@@ -99,6 +105,7 @@ public class MovieController {
             .distinct()
             .collect(Collectors.toList());
 
+        model.addAttribute("newMovie", new Movie());
         model.addAttribute("genres", genres);
 
         return "index";
@@ -125,6 +132,7 @@ public class MovieController {
             .distinct()
             .collect(Collectors.toList());
 
+        model.addAttribute("newMovie", new Movie());
         model.addAttribute("genres", genres);
 
         return "index";
@@ -151,22 +159,42 @@ public class MovieController {
             .distinct()
             .collect(Collectors.toList());
 
+        model.addAttribute("newMovie", new Movie());
         model.addAttribute("genres", genres);
 
         return "index";
     }
 
-    @PostMapping("/addMovie")
-    // Solo per admin role (aggiungere un pulsante quando si è loggati come admin)
-    public String addMovie(@ModelAttribute Movie movie, Model model) {
-        
-        movieService.saveMovieWithCoverImage(movie);
-        
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/movies/add")
+    public String addMovie(@ModelAttribute Movie newMovie, 
+                        @RequestParam("coverImage") MultipartFile coverImage,
+                        Model model) {
+        // Salva il film per ottenere l'ID
+        Movie savedMovie = movieService.saveMovieArtifact(newMovie);
+
+        // Percorso della cartella
+        String dirPath = "/images/movies";
+        String fileName = "movie_" + savedMovie.getId() + ".png";
+        try {
+            Path uploadPath = Paths.get(dirPath);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+            Path filePath = uploadPath.resolve(fileName);
+            coverImage.transferTo(filePath.toFile());
+            // Aggiorna il path nel film e salva di nuovo
+            savedMovie.setCoverImagePath(dirPath + "/" + fileName);
+            movieService.saveMovieArtifact(savedMovie);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return "redirect:/";
     }
 
-    @PostMapping("/deleteMovie/{id}")
-    // Solo per admin role (aggiungere un pulsante quando si è loggati come admin)
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/movies/delete/{id}")
     public String deleteMovie(@PathVariable Long id) {
 
         movieService.deleteMovieById(id);

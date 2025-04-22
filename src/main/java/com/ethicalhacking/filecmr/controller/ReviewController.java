@@ -130,7 +130,7 @@ public class ReviewController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @PostMapping("/auth/addReview")
+    @PostMapping("/auth/comments/add")
     public String addReview(@RequestParam Long movieId, @RequestParam String content, @RequestParam Integer rating, Model model) {
 
         Review review = new Review();
@@ -145,7 +145,7 @@ public class ReviewController {
     }
     
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/auth/deleteReview/{reviewId}")
+    @GetMapping("/auth/reviews/delete/{reviewId}")
     public String deleteReview(@PathVariable Long reviewId) {
         
         reviewService.deleteReviewById(reviewId);

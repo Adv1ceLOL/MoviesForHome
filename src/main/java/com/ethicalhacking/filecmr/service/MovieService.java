@@ -33,8 +33,7 @@ public class MovieService {
 
     public void saveMovieWithCoverImage(Movie movie) {
         Movie savedMovie = saveMovieArtifact(movie);
-        ///images/movie_{id}/image_{id}.png(id=${movie.id})
-        String imagePath = "images/movie_" + savedMovie.getId() + "/image_" + savedMovie.getId() + ".png";
+        String imagePath = "images/movies/movie_" + savedMovie.getId() + ".png";
         movie.setCoverImagePath(imagePath);
         movieRepository.save(movie);
     }

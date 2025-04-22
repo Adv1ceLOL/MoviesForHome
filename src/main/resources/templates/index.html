@@ -69,6 +69,58 @@
                   <a class="main-header-link" href="/movies/latest">Latest</a>
                   <a class="main-header-link" href="/movies/upcoming">Upcoming</a>
                 </div>
+                <!-- Bottone per aprire il popup nuovo film -->
+                <button th:if="${currentUser != null && currentUser.isAdmin}" class="add-movie-btn">Add movie</button>
+
+                <!-- Popup aggiungi film -->
+                <div th:if="${currentUser != null && currentUser.isAdmin}" class="add-movie-popup">
+                    <form class="add-movie-form" th:action="@{/movies/add}" method="post" enctype="multipart/form-data">
+                        <button type="button" class="close-add-movie">&times;</button>
+                        <label style="grid-column: 1 / -1;">
+                            Cover Image:
+                            <input type="file" name="coverImage" id="coverImageInput" accept="image/*">
+                            <span id="file-size-warning" style="color:red; display:none;">File too large! Max 35KB.</span>
+                        </label>
+                        <script>
+                            document.getElementById('coverImageInput').addEventListener('change', function(e) {
+                                const file = e.target.files[0];
+                                const warning = document.getElementById('file-size-warning');
+                                if (file && file.size > 35840) {
+                                    warning.style.display = 'inline';
+                                    e.target.value = '';
+                                } else {
+                                    warning.style.display = 'none';
+                                }
+                            });
+                        </script>
+                        <div class="form-columns">
+                            <label>
+                                Movie Title:
+                                <input type="text" th:field="${newMovie.title}" required>
+                            </label>
+                            <label>
+                                Director:
+                                <input type="text" th:field="${newMovie.director}" required>
+                            </label>
+                            <label>
+                                Genre:
+                                <select th:field="${newMovie.genre}" required>
+                                    <option value="" disabled selected>Select genre</option>
+                                    <option th:each="g : ${genres}" th:value="${g}" th:text="${g}"></option>
+                                </select>
+                            </label>
+                            <label>
+                                Year:
+                                <input type="number" th:field="${newMovie.year}" min="1800" max="2100" required>
+                            </label>
+                        </div>
+                        <label style="grid-column: 1 / -1;">
+                            Description:
+                            <textarea th:field="${newMovie.description}" rows="3" required></textarea>
+                        </label>
+                        <button type="submit" class="content-button status-button" style="grid-column: 1 / -1;">Submit</button>
+                    </form>
+                </div>
               </div>
               <div class="content-wrapper">
                 <div class="movie-list">

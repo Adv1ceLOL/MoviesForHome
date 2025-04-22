@@ -86,3 +86,13 @@ $(document).on('click', '.add-comment-btn', function() {
 $(document).on('click', '.close-add-comment', function() {
   $('.add-comment-popup').fadeOut(150);
 });
+
+// Mostra popup nuovo film
+$(document).on('click', '.add-movie-btn', function() {
+  $('.add-movie-popup').css('display', 'flex').hide().fadeIn(150);
+});
+
+// Nascondi popup nuovo film
+$(document).on('click', '.close-add-movie', function() {
+  $('.add-movie-popup').fadeOut(150);
+});

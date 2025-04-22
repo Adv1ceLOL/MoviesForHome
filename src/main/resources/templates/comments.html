@@ -61,7 +61,7 @@
                     <button class="add-comment-btn" th:if="${currentUser != null}" >Add review</button>
                     
                     <div class="add-comment-popup" th:if="${currentUser != null}">
-                      <form class="add-comment-form" th:action="@{/auth/addReview}" method="post">
+                      <form class="add-comment-form" th:action="@{/auth/reviews/add}" method="post">
                         <button type="button" class="close-add-comment">&times;</button>
                         <div class="star-rating">
                             <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 stars">&#9733;</label>
@@ -79,7 +79,7 @@
                         <label>
                             Leave your comment:
                             <input type="text" name="content" required>
-                          </label>
+                        </label>
                         <button type="submit" class="content-button status-button">Submit</button>
                       </form>
                     </div>
@@ -124,7 +124,7 @@
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a th:if="${currentUser.isAdmin}" th:href="@{/auth/deleteReview/{reviewId} (reviewId=${user.reviewId})}">
+                                                        <a th:if="${currentUser.isAdmin}" th:href="@{/auth/reviews/delete/{reviewId} (reviewId=${user.reviewId})}">
                                                           <span style="vertical-align: middle;">
                                                             <!-- Icona cestino (delete) -->
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#f44336" viewBox="0 0 16 16" style="margin-right:4px;">

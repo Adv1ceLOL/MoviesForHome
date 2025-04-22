@@ -23,6 +23,17 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public User saveUserArtifact(User user) {
+        return userRepository.save(user);
+    }
+
+    public void saveUserWithProfileImage(User user) {
+        User savedUser = saveUserArtifact(user);
+        String imagePath = "images/users/user_" + savedUser.getId() + ".png";
+        user.setProfileImagePath(imagePath);
+        userRepository.save(user);
+    }
+
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
