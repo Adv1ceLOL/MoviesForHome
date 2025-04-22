@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoviesForHome - Reviews</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="video-bg">
+        <video width="320" height="240" autoplay loop muted>
+            <source src="https://assets.codepen.io/3364143/7btrrd.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="dark-light" id="toggle-theme" style="cursor:pointer;">
+        <!-- Icona Luna -->
+        <svg id="moon-icon" style="display:block;" viewBox="0 0 24 24" stroke="gold" stroke-width="1.5" fill="gold" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+        </svg>
+        <!-- Icona Sole -->
+        <svg id="sun-icon" style="display:none;" viewBox="0 0 24 24" stroke="gold" stroke-width="1.5" fill="gold" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <!-- Sfondo animato -->
+        <div class="theme-bg">
+            <div class="sea"></div>
+            <div class="stars"></div>
+            <div class="clouds">
+                <div class="cloud cloud1"></div>
+                <div class="cloud cloud2"></div>
+                <div class="cloud cloud3"></div>
+            </div>
+        </div>
+    </div>
+    <div class="app">
+        <div class="header">
+            <div class="menu-circle"></div>
+            <div class="header-menu">
+                <a class="menu-link" href="/movies">Movies</a>
+                <a class="menu-link is-active" href="/comments">Reviews</a>
+            </div>
+            <div class="header-profile-group" th:if="${currentUser == null}">
+                <a class="header-profile" th:href="@{/signup}">
+                    <span class="add-user-btn" style="margin-left: 25rem;">Signup</span>
+                </a>
+                <a class="header-profile" th:href="@{/login}">
+                    <span class="add-user-btn" style="margin-left: 0rem;">Login</span>
+                </a>
+            </div>
+            <a class="header-profile" th:if="${currentUser != null}" th:href="@{/logout}">
+                <img class="profile-img" src="/images/logo.jpg" alt="">
+                <span class="username-label" th:text="${currentUser.username}"></span>
+            </a>
+        </div>
+        <div class="wrapper">
+            <div class="left-side">
+                <div class="side-wrapper">
+                    <div class="side-title">Movies</div>
+                    <div class="side-menu">
+                        <a href="#" class="side-menu-link" th:if="${#lists.isEmpty(moviesWithComments)}">No movies available</a>
+                        <a th:href="@{/comments/{movieId} (movieId=${movie.id})}" class="side-menu-link" th:each="movie : ${moviesWithComments}" th:text="${movie.title}">Genre</a>
+                    </div>
+                </div>
+            </div>
+            <div class="main-container-comments">
+                <div class="content-wrapper-comments">
+                    <button class="add-comment-btn" th:if="${currentUser != null}" >Add review</button>
+                    
+                    <div class="add-comment-popup" th:if="${currentUser != null}">
+                      <form class="add-comment-form" th:action="@{/auth/reviews/add}" method="post">
+                        <button type="button" class="close-add-comment">&times;</button>
+                        <div class="star-rating">
+                            <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 stars">&#9733;</label>
+                            <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 stars">&#9733;</label>
+                            <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 stars">&#9733;</label>
+                            <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 stars">&#9733;</label>
+                            <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 star">&#9733;</label>
+                        </div>
+                        <label>
+                          Select a movie:
+                          <select name="movieId" required>
+                            <option th:each="movie : ${movies}" th:value="${movie.id}" th:text="${movie.title}">Movie Title</option>
+                          </select>
+                        </label>
+                        <label>
+                            Leave your comment:
+                            <input type="text" name="content" required>
+                        </label>
+                        <button type="submit" class="content-button status-button">Submit</button>
+                      </form>
+                    </div>
+                    <div class="comments-container">
+                        <!-- Messaggio di avviso se non ci sono commenti -->
+                        <div th:if="${#maps.isEmpty(groupedComments)}">
+                            <span>No comments available. Come back later!</span>
+                        </div>
+                        <!-- Visualizza commenti raggruppati per film -->
+                        <div class="content-section" th:each="entry : ${groupedComments}">
+                            <div class="content-section-title">
+                                Comments for <span th:text="${entry.key}">Movie Title</span>
+                            </div>
+                            <ul>
+                                <li class="adobe-product" th:each="user : ${entry.value}">
+                                    <div class="products">
+                                        <img th:src="${user.userProfileImage.startsWith('https://')} ? ${user.userProfileImage} : @{/${user.userProfileImage}}" th:alt="${user.username}" style="width: 28px; height: 28px; border-radius: 50%; margin-right: 16px;" />
+                                        <span th:text="${user.username}">User Name</span>
+                                    </div>
+                                    <span class="status">
+                                        <div class="movie-rating">
+                                            <svg class="svg-stars" viewBox="0 0 24 24" stroke-linejoin="round">
+                                              <path d="M12 .587l3.668 7.431 8.2 1.193-5.934 5.787 1.402 8.179L12 18.897l-7.336 3.866 1.402-8.179L.132 9.211l8.2-1.193z"/>
+                                            </svg>
+                                            <span th:text="${user.rating} + ' / 5' ?: 'N/A'">N/A</span>
+                                        </div>
+                                        <span class="comment-text" th:text="${user.comment}">Comment text</span>
+                                    </span>
+                                    <div class="button-wrapper">
+                                        <div th:if="${currentUser != null}" class="menu">
+                                            <button class="dropdown">
+                                                <ul>
+                                                    <li>
+                                                        <a href="#" class="flag-comment-link">
+                                                          <span style="vertical-align: middle;">
+                                                            <!-- Icona bandiera (flag) -->
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff9800" viewBox="0 0 16 16" style="margin-right:4px;">
+                                                              <path d="M2 2v12h1V9h9.293l-1.147 1.146.708.708L15 8l-3.146-3.146-.708.708L12.293 8H3V2H2z"/>
+                                                            </svg>
+                                                            Flag Comment
+                                                          </span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a th:if="${currentUser.isAdmin}" th:href="@{/auth/reviews/delete/{reviewId} (reviewId=${user.reviewId})}">
+                                                          <span style="vertical-align: middle;">
+                                                            <!-- Icona cestino (delete) -->
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#f44336" viewBox="0 0 16 16" style="margin-right:4px;">
+                                                              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5.5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6zm2 .5a.5.5 0 0 1 .5-.5.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6z"/>
+                                                              <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3.5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1H14.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3a.5.5 0 0 0-.5.5V4h12v-.5a.5.5 0 0 0-.5-.5h-11z"/>
+                                                            </svg>
+                                                            Delete Comment
+                                                          </span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>          
+        </div>
+    </div>
+    <div class="overlay-app"></div>
+    <div class="toast-flag">
+      Thanks for the feedback
+    </div>
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>MoviesForHome - Login</title>
+        <link rel="stylesheet" href="/css/style.css" />
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      </head>
+      <body>
+        <div class="video-bg">
+          <video autoplay loop muted>
+            <source src="https://assets.codepen.io/3364143/7btrrd.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+        <div class="app" style="max-height: 660px;">
+          <div class="header">
+            <div class="menu-circle"></div>
+          </div>
+          <!-- Login form placed inside the content-wrapper -->
+          <div class="login-wrapper">
+            <!-- Back to index button -->
+            <a href="/" class="back-to-index">&lt;</a>
+            <form th:if="${currentUser == null}" class="login-form" th:action="@{/login}" method="post">
+              <h2>Login</h2>
+              <input type="text" name="username" placeholder="Username" required />
+              <input type="password" name="password" placeholder="Password" required />
+              <div th:if="${param.error}">
+                <p th:text="${param.error}"></p>
+              </div>
+              <button type="submit" class="view-comments-btn">Login</button>
+            </form>
+            <form th:unless="${currentUser == null}" class="login-form" th:action="@{/logout}" method="post">
+              <h2>Logout?</h2>
+              <button type="submit" class="view-comments-btn">Yes</button>
+            </form>
+          </div>
+        </div>
+        <div class="overlay-app"></div>
+        <script src="js/main.js"></script>
+      </body>
+    </html>
