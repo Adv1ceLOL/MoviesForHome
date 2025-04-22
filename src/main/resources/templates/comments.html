@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoviesForHome - Comments</title>
+    <title>MoviesForHome - Reviews</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -13,21 +13,37 @@
             <source src="https://assets.codepen.io/3364143/7btrrd.mp4" type="video/mp4">
         </video>
     </div>
-    <div class="dark-light">
-        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <div class="dark-light" id="toggle-theme" style="cursor:pointer;">
+        <!-- Icona Luna -->
+        <svg id="moon-icon" style="display:block;" viewBox="0 0 24 24" stroke="gold" stroke-width="1.5" fill="gold" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
         </svg>
+        <!-- Icona Sole -->
+        <svg id="sun-icon" style="display:none;" viewBox="0 0 24 24" stroke="gold" stroke-width="1.5" fill="gold" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <!-- Sfondo animato -->
+        <div class="theme-bg">
+            <div class="sea"></div>
+            <div class="stars"></div>
+            <div class="clouds">
+                <div class="cloud cloud1"></div>
+                <div class="cloud cloud2"></div>
+                <div class="cloud cloud3"></div>
+            </div>
+        </div>
     </div>
     <div class="app">
         <div class="header">
             <div class="menu-circle"></div>
             <div class="header-menu">
                 <a class="menu-link is-active" href="/movies">Movies</a>
-                <a class="menu-link notify" href="/comments">Comments</a>
+                <a class="menu-link notify" href="/comments">Reviews</a>
             </div>
-            <div class="header-profile">
+            <a class="header-profile" href="/login">
                 <img class="profile-img" src="/images/logo.jpg" alt="">
-            </div>
+            </a>
         </div>
         <div class="wrapper">
             <div class="left-side">
@@ -41,7 +57,7 @@
             </div>
             <div class="main-container-comments">
                 <div class="content-wrapper-comments">
-                    <button class="add-comment-btn" >Add Comment</button>
+                    <button class="add-comment-btn" >Add review</button>
                     
                     <div class="add-comment-popup">
                       <form class="add-comment-form">
@@ -111,5 +127,6 @@
     <div class="toast-flag">
       Thanks for the feedback
     </div>
+    <script src="js/main.js"></script>
 </body>
 </html>
