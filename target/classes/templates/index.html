@@ -46,9 +46,50 @@
                 <input type="text" name="title" placeholder="Search movies...">
               </form>
             </div>
-            <a class="header-profile" th:href="${currentUser != null} ? '/logout' : '/login'">
+            <div class="header-profile-group" th:if="${currentUser == null}">
+                <!-- Bottone per aprire il popup -->
+                <button class="add-user-btn">Signup</button>
+
+                <!-- Popup registrazione utente -->
+                <div class="add-user-popup" style="display:none;">
+                    <form class="add-user-form" th:action="@{/signup}" method="post" enctype="multipart/form-data">
+                        <button type="button" class="close-add-user">&times;</button>
+                        <label style="grid-column: 1 / -1;">
+                            Profile Picture:
+                            <input type="file" name="profileImage" id="profileImageInput" accept="image/*">
+                            <span id="file-size-warning" style="color:red; display:none;">File too large! Max 35KB.</span>
+                        </label>
+                        <script>
+                            document.getElementById('profileImageInput').addEventListener('change', function(e) {
+                                const file = e.target.files[0];
+                                const warning = document.getElementById('file-size-warning');
+                                if (file && file.size > 35840) {
+                                    warning.style.display = 'inline';
+                                    e.target.value = '';
+                                } else {
+                                    warning.style.display = 'none';
+                                }
+                            });
+                        </script>
+                        <label>
+                            Username:
+                            <input type="text" name="username" required>
+                        </label>
+                        <label>
+                            Password:
+                            <input type="password" name="password" required>
+                        </label>
+                        <button type="submit" class="content-button status-button">Submit</button>
+                    </form>
+                </div>
+                <a class="header-profile" th:href="@{/login}">
+                    <img class="profile-img" src="/images/logo.jpg" alt="">
+                    <span class="username-label">Login</span>
+                </a>
+            </div>
+            <a class="header-profile" th:if="${currentUser != null}" th:href="@{/logout}">
                 <img class="profile-img" src="/images/logo.jpg" alt="">
-                <span class="username-label" th:text="${currentUser != null} ? ${currentUser.username} : 'Guest'"></span>
+                <span class="username-label" th:text="${currentUser.username}"></span>
             </a>
         </div>
         <div class="wrapper">

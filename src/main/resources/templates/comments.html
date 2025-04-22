@@ -41,9 +41,18 @@
                 <a class="menu-link" href="/movies">Movies</a>
                 <a class="menu-link is-active" href="/comments">Reviews</a>
             </div>
-            <a class="header-profile" th:href="${currentUser != null} ? '/logout' : '/login'">
+            <div class="header-profile-group" th:if="${currentUser == null}">
+                <a class="header-profile" th:href="@{/signup}">
+                    <span class="username-label">Signup</span>
+                </a>
+                <a class="header-profile" th:href="@{/login}">
+                    <img class="profile-img" src="/images/logo.jpg" alt="">
+                    <span class="username-label">Login</span>
+                </a>
+            </div>
+            <a class="header-profile" th:if="${currentUser != null}" th:href="@{/logout}">
                 <img class="profile-img" src="/images/logo.jpg" alt="">
-                <span class="username-label" th:text="${currentUser != null} ? ${currentUser.username} : 'Guest'"></span>
+                <span class="username-label" th:text="${currentUser.username}"></span>
             </a>
         </div>
         <div class="wrapper">

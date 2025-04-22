@@ -1,17 +1,3 @@
-$(function () {
- $(".menu-link").click(function () {
-  $(".menu-link").removeClass("is-active");
-  $(this).addClass("is-active");
- });
-});
-
-$(function () {
- $(".main-header-link").click(function () {
-  $(".main-header-link").removeClass("is-active");
-  $(this).addClass("is-active");
- });
-});
-
 $(document).on('click', '.dropdown', function(e) {
   e.stopPropagation();
   // Close other open dropdowns
@@ -24,20 +10,6 @@ $(document).on('click', '.dropdown', function(e) {
 $(document).on('click', function() {
   $('.dropdown').removeClass('is-active');
 });
-
-$(document).on('click', '.flag-comment-link', function(e) {
-  e.preventDefault();
-  const $toast = $('.toast-flag');
-  $toast.stop(true, true).fadeIn(200).delay(2000).fadeOut(400);
-});
-
-$(".search-bar input")
- .focus(function () {
-  $(".header").addClass("wide");
- })
- .blur(function () {
-  $(".header").removeClass("wide");
- });
 
 const toggleButton = document.querySelector('.dark-light');
 
@@ -95,4 +67,14 @@ $(document).on('click', '.add-movie-btn', function() {
 // Nascondi popup nuovo film
 $(document).on('click', '.close-add-movie', function() {
   $('.add-movie-popup').fadeOut(150);
+});
+
+// Mostra popup nuovo film
+$(document).on('click', '.add-user-btn', function() {
+  $('.add-user-popup').css('display', 'flex').hide().fadeIn(150);
+});
+
+// Nascondi popup nuovo film
+$(document).on('click', '.close-add-user', function() {
+  $('.add-user-popup').fadeOut(150);
 });

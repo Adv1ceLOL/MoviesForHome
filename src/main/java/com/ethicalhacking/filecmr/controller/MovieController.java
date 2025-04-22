@@ -168,27 +168,33 @@ public class MovieController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/movies/add")
     public String addMovie(@ModelAttribute Movie newMovie, 
-                        @RequestParam("coverImage") MultipartFile coverImage,
+                        @RequestParam(value = "coverImage", required = false) MultipartFile coverImage,
                         Model model) {
         // Salva il film per ottenere l'ID
         Movie savedMovie = movieService.saveMovieArtifact(newMovie);
 
-        // Percorso della cartella
-        String dirPath = "/images/movies";
-        String fileName = "movie_" + savedMovie.getId() + ".png";
-        try {
-            Path uploadPath = Paths.get(dirPath);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
+        if (coverImage != null && !coverImage.isEmpty()) {
+            try {
+                // Percorso della cartella
+                String dirPath = "/images/movies";
+                String fileName = "movie_" + savedMovie.getId() + ".png";
+                Path uploadPath = Paths.get(dirPath);
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+                Path filePath = uploadPath.resolve(fileName);
+                coverImage.transferTo(filePath.toFile());
+                // Aggiorna il path nel film e salva di nuovo
+                savedMovie.setCoverImagePath(dirPath + "/" + fileName);
+                movieService.saveMovieArtifact(savedMovie);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            Path filePath = uploadPath.resolve(fileName);
-            coverImage.transferTo(filePath.toFile());
-            // Aggiorna il path nel film e salva di nuovo
-            savedMovie.setCoverImagePath(dirPath + "/" + fileName);
+        }else{
+            savedMovie.setCoverImagePath("/images/movies/default.png");
             movieService.saveMovieArtifact(savedMovie);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+        
 
         return "redirect:/";
     }
