@@ -32,7 +32,7 @@ public class Movie {
     private String genre;
 
     @Column(name = "year")
-    private String year;
+    private Integer year;
 
     @Column(name = "description")
     private String description;

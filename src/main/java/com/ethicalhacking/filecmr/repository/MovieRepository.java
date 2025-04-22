@@ -13,9 +13,15 @@ import com.ethicalhacking.filecmr.model.Movie;
 @Repository
 public interface MovieRepository extends JpaRepository<Movie, Long> {
     List<Movie> findByGenre(String genre);
-    List<Movie> findByYear(String year);
+    List<Movie> findByYear(Integer year);
     List<Movie> findByTitleContainingIgnoreCase(String title);
     List<Movie> findByDirectorContainingIgnoreCase(String director);
+
+    // Custom query to find movies based on the higher average of ratings in reviews (show only those with rating > 4)
+    @Query("SELECT m FROM Movie m JOIN m.reviews r GROUP BY m.id HAVING AVG(r.rating) >= 4 ORDER BY AVG(r.rating) DESC")
+    List<Movie> findMostPopularMovies();
+
+    List<Movie> findByYearGreaterThanEqual(Integer year);
     
     @Query("SELECT m FROM Movie m LEFT JOIN FETCH m.reviews r LEFT JOIN FETCH r.user WHERE m.id = :movieId")
     Optional<Movie> findByIdWithReviewsAndUsers(@Param("movieId") Long movieId);

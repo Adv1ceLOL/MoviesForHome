@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MoviesForHome - Reviews</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
@@ -38,11 +38,12 @@
         <div class="header">
             <div class="menu-circle"></div>
             <div class="header-menu">
-                <a class="menu-link is-active" href="/movies">Movies</a>
-                <a class="menu-link notify" href="/comments">Reviews</a>
+                <a class="menu-link" href="/movies">Movies</a>
+                <a class="menu-link is-active" href="/comments">Reviews</a>
             </div>
-            <a class="header-profile" href="/login">
+            <a class="header-profile" th:href="${currentUser != null} ? '/logout' : '/login'">
                 <img class="profile-img" src="/images/logo.jpg" alt="">
+                <span class="username-label" th:text="${currentUser != null} ? ${currentUser.username} : 'Guest'"></span>
             </a>
         </div>
         <div class="wrapper">
@@ -57,29 +58,28 @@
             </div>
             <div class="main-container-comments">
                 <div class="content-wrapper-comments">
-                    <button class="add-comment-btn" >Add review</button>
+                    <button class="add-comment-btn" th:if="${currentUser != null}" >Add review</button>
                     
-                    <div class="add-comment-popup">
-                      <form class="add-comment-form">
+                    <div class="add-comment-popup" th:if="${currentUser != null}">
+                      <form class="add-comment-form" th:action="@{/auth/addReview}" method="post">
                         <button type="button" class="close-add-comment">&times;</button>
+                        <div class="star-rating">
+                            <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 stars">&#9733;</label>
+                            <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 stars">&#9733;</label>
+                            <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 stars">&#9733;</label>
+                            <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 stars">&#9733;</label>
+                            <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 star">&#9733;</label>
+                        </div>
                         <label>
-                          Comment:
-                          <input type="text" name="comment" required>
-                        </label>
-                        <label>
-                          Movie:
-                          <select name="movie" required>
-                            <!-- Options will be filled by JS -->
+                          Select a movie:
+                          <select name="movieId" required>
+                            <option th:each="movie : ${movies}" th:value="${movie.id}" th:text="${movie.title}">Movie Title</option>
                           </select>
                         </label>
                         <label>
-                          Rating:
-                          <select name="review" required>
-                            <option value="good">Good</option>
-                            <option value="medium">Medium</option>
-                            <option value="bad">Bad</option>
-                          </select>
-                        </label>
+                            Leave your comment:
+                            <input type="text" name="content" required>
+                          </label>
                         <button type="submit" class="content-button status-button">Submit</button>
                       </form>
                     </div>
@@ -100,17 +100,41 @@
                                         <span th:text="${user.username}">User Name</span>
                                     </div>
                                     <span class="status">
-                                        <span class="status-circle"
-                                              th:style="'background-color:' + (${user.rating} >= 4 ? '#3bf083' : (${user.rating} >= 2 ? '#ffeb3b' : '#ff5858'))">
-                                        </span>
-                                        <span th:text="${user.comment}">Comment text</span>
+                                        <div class="movie-rating">
+                                            <svg class="svg-stars" viewBox="0 0 24 24" stroke-linejoin="round">
+                                              <path d="M12 .587l3.668 7.431 8.2 1.193-5.934 5.787 1.402 8.179L12 18.897l-7.336 3.866 1.402-8.179L.132 9.211l8.2-1.193z"/>
+                                            </svg>
+                                            <span th:text="${user.rating} + ' / 5' ?: 'N/A'">N/A</span>
+                                        </div>
+                                        <span class="comment-text" th:text="${user.comment}">Comment text</span>
                                     </span>
                                     <div class="button-wrapper">
-                                        <div class="menu">
+                                        <div th:if="${currentUser != null}" class="menu">
                                             <button class="dropdown">
                                                 <ul>
-                                                    <li><a href="#" class="flag-comment-link">Flag Comment</a></li>
-                                                    <li><a href="#">Delete Comment</a></li>
+                                                    <li>
+                                                        <a href="#" class="flag-comment-link">
+                                                          <span style="vertical-align: middle;">
+                                                            <!-- Icona bandiera (flag) -->
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff9800" viewBox="0 0 16 16" style="margin-right:4px;">
+                                                              <path d="M2 2v12h1V9h9.293l-1.147 1.146.708.708L15 8l-3.146-3.146-.708.708L12.293 8H3V2H2z"/>
+                                                            </svg>
+                                                            Flag Comment
+                                                          </span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a th:if="${currentUser.isAdmin}" th:href="@{/auth/deleteReview/{reviewId} (reviewId=${user.reviewId})}">
+                                                          <span style="vertical-align: middle;">
+                                                            <!-- Icona cestino (delete) -->
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#f44336" viewBox="0 0 16 16" style="margin-right:4px;">
+                                                              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5.5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6zm2 .5a.5.5 0 0 1 .5-.5.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6z"/>
+                                                              <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3.5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1H14.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3a.5.5 0 0 0-.5.5V4h12v-.5a.5.5 0 0 0-.5-.5h-11z"/>
+                                                            </svg>
+                                                            Delete Comment
+                                                          </span>
+                                                        </a>
+                                                    </li>
                                                 </ul>
                                             </button>
                                         </div>

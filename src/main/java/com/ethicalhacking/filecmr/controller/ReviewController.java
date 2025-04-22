@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
@@ -15,6 +16,7 @@ import com.ethicalhacking.filecmr.model.Review;
 import com.ethicalhacking.filecmr.model.User;
 import com.ethicalhacking.filecmr.service.MovieService;
 import com.ethicalhacking.filecmr.service.ReviewService;
+import com.ethicalhacking.filecmr.service.UserService;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +26,10 @@ import lombok.Setter;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
 
 
 @Controller
@@ -31,6 +37,9 @@ public class ReviewController {
     
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private MovieService movieService;
@@ -44,10 +53,12 @@ public class ReviewController {
         private String userProfileImage;
         private Integer rating;
         private String comment;
+        private Long reviewId;
     }
 
     @GetMapping("/comments")
     public String showComments(Model model) {
+        List<Movie> allMovies = movieService.getAllMovies();
         List<Movie> movies = movieService.getAllMoviesWithReviewsAndUsers();
 
         Map<String, List<UserCommentDTO>> groupedComments = new LinkedHashMap<>();
@@ -62,7 +73,8 @@ public class ReviewController {
                         user.getUsername(),
                         user.getProfileImagePath(),
                         review.getRating(),
-                        review.getContent()
+                        review.getContent(),
+                        review.getId()
                     ));
                 }
             }
@@ -72,6 +84,7 @@ public class ReviewController {
             }
         }
 
+        model.addAttribute("movies", allMovies);
         model.addAttribute("groupedComments", groupedComments);
         model.addAttribute("moviesWithComments", movies);
 
@@ -80,6 +93,8 @@ public class ReviewController {
 
     @GetMapping("/comments/{movieId}")
     public String showCommentsForMovie(@PathVariable Long movieId, Model model) {
+    
+    List<Movie> allMovies = movieService.getAllMovies();
     Optional<Movie> movieOpt = movieService.getMovieByIdWithReviewsAndUsers(movieId);
 
     if (movieOpt.isEmpty()) {
@@ -96,7 +111,8 @@ public class ReviewController {
                 user.getUsername(),
                 user.getProfileImagePath(),
                 review.getRating(),
-                review.getContent()
+                review.getContent(),
+                review.getId()
             ));
         }
     }
@@ -106,10 +122,36 @@ public class ReviewController {
         groupedComments.put(movie.getTitle(), comments);
     }
 
+    model.addAttribute("movies", allMovies);
     model.addAttribute("groupedComments", groupedComments);
     
     return "comments";
-}
+
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PostMapping("/auth/addReview")
+    public String addReview(@RequestParam Long movieId, @RequestParam String content, @RequestParam Integer rating, Model model) {
+
+        Review review = new Review();
+        review.setMovie(movieService.getMovieById(movieId));
+        review.setRating(rating);
+        review.setContent(content);
+        review.setUser(userService.getUserById(1L)); // da modificare con l'utente loggato
+
+        reviewService.saveReview(review);
+        
+        return "redirect:/comments/" + movieId;
+    }
+    
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/auth/deleteReview/{reviewId}")
+    public String deleteReview(@PathVariable Long reviewId) {
+        
+        reviewService.deleteReviewById(reviewId);
+        
+        return "redirect:/comments";
+    }
     
 
 }

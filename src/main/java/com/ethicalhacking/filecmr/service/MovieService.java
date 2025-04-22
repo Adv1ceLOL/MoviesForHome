@@ -55,6 +55,14 @@ public class MovieService {
         return movieRepository.findAll();
     }
 
+    public List<Movie> getPopularMovies() {
+        return movieRepository.findMostPopularMovies();
+    }
+
+    public List<Movie> getLatestMovies(Integer year) {
+        return movieRepository.findByYearGreaterThanEqual(year);
+    }
+
     public List<Movie> getAllMoviesWithReviewsAndUsers() {
         return movieRepository.findAllWithReviewsAndUsers();
     }

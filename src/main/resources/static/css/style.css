@@ -199,6 +199,38 @@ body {
   100% { left: 38px; }
 }
 
+.star-rating {
+  direction: rtl;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2em !important; /* aumenta la dimensione delle stelle */
+  gap: 0.15em;
+  margin: 16px 0;
+}
+.star-rating input[type="radio"] {
+  display: none;
+}
+.star-rating label {
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 0 0.05em;
+}
+.star-rating input[type="radio"]:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  color: gold;
+}
+
+.username-label {
+  font-weight: 400;
+  color: var(--theme-color);
+  font-size: 1.1em;
+  margin-left: 8px;
+  letter-spacing: 0.5px;
+}
+
 .login-wrapper {
   display: flex;
   position: relative;
@@ -285,6 +317,14 @@ img {
   margin-top: 15px;
   display: flex;
   min-width: fit-content;
+}
+
+.movie-rating > svg {
+  fill: #FFD700;
+  width: 18px;
+  margin-right: 4px;
+  margin-bottom: 4px;
+  vertical-align: middle;
 }
 
 .dark-light {
@@ -461,6 +501,7 @@ body.light-mode .video-bg:before {
   padding: 0 16px 0 40px;
   margin-left: auto;
   flex-shrink: 0;
+  text-decoration: none;
 }
 .header-profile svg {
   width: 22px;
@@ -691,6 +732,13 @@ body.light-mode .video-bg:before {
   background-color: var(--overlay-bg);
 }
 
+.comment-text {
+  display: inline-block;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
 .add-comment-btn {
   position: absolute;
   display: inline-block;
@@ -719,36 +767,99 @@ body.light-mode .video-bg:before {
 
 .add-comment-popup {
   display: none;
+  justify-content: center;
+  align-items: center;
   position: fixed;
   top: 0; left: 0;
   width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.4);
+  background: rgba(30, 41, 59, 0.55);
   z-index: 100;
-  justify-content: center;
-  align-items: center;
+  animation: fadeInPopup 0.4s;
+  backdrop-filter: blur(4px);
 }
 
-/* Make the popup form 20% bigger and keep it centered */
+@keyframes fadeInPopup {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 .add-comment-form {
-  background: rgba(0,0,0,0.6);
-  padding: 32px 24px; /* increased padding */
-  border-radius: 12px;
-  min-width: 288px;   /* 20% bigger than 240px */
+  background: rgba(40, 60, 120, 0.28);
+  border-radius: 22px;
+  box-shadow: 0 8px 32px 0 rgba(80,120,255,0.18), 0 1.5px 8px 0 rgba(160,132,238,0.13);
+  padding: 40px 32px;
+  min-width: 320px;
   max-width: 95vw;
-  width: 500px;       /* 20% bigger than 320px */
+  width: 420px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 22px;
   position: relative;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+  animation: popupScaleIn 0.4s cubic-bezier(.23,1.12,.32,1);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1.5px solid rgba(160,132,238,0.25);
+  /* bordo luminoso */
+  box-shadow: 0 0 0 2px rgba(160,132,238,0.12), 0 8px 32px 0 rgba(80,120,255,0.18);
 }
 
-/* Close (X) button */
+@keyframes popupScaleIn {
+  from { transform: scale(0.92); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.add-comment-form label {
+  color: #fff;
+  font-weight: 500;
+  margin-bottom: 4px;
+  letter-spacing: 0.2px;
+}
+
+.add-comment-form input,
+.add-comment-form select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255,255,255,0.13);
+  color: #fff;
+  font-size: 16px;
+  margin-top: 4px;
+  box-shadow: 0 1px 4px rgba(79,140,255,0.08);
+  transition: box-shadow 0.2s, background 0.2s;
+}
+.add-comment-form input:focus,
+.add-comment-form select:focus {
+  outline: none;
+  background: rgba(255,255,255,0.22);
+  box-shadow: 0 0 0 2px #a084ee;
+}
+
+.add-comment-form button[type="submit"] {
+  margin-top: 12px;
+  align-self: flex-end;
+  background: linear-gradient(90deg, #4f8cff 0%, #a084ee 100%);
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 10px 32px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 16px rgba(80, 120, 255, 0.18);
+  transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+.add-comment-form button[type="submit"]:hover {
+  background: linear-gradient(90deg, #a084ee 0%, #4f8cff 100%);
+  transform: scale(1.07);
+  box-shadow: 0 6px 24px rgba(80, 120, 255, 0.28);
+}
+
 .close-add-comment {
   position: absolute;
-  top: 6px;
-  right: 10px;
-  font-size: 30px;
+  top: 10px;
+  right: 18px;
+  font-size: 32px;
   background: none;
   border: none;
   color: #fff;
@@ -756,30 +867,35 @@ body.light-mode .video-bg:before {
   z-index: 2;
   padding: 0;
   line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.close-add-comment:hover {
+  opacity: 1;
+  transform: scale(1.2) rotate(90deg);
 }
 
-/* Popup form fields */
-.add-comment-form label {
-  color: #eee;
-  font-size: 18px;
-  margin-bottom: 2px;
+.star-rating {
+  direction: rtl;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.2em !important;
+  gap: 0.18em;
+  margin: 12px 0 0 0;
 }
-
-.add-comment-form input,
-.add-comment-form select {
-  width: 100%;
-  padding: 6px 8px;
-  border-radius: 4px;
-  border: 1px solid #444;
-  background: #181818;
+.star-rating label {
   color: #fff;
-  font-size: 16px;
-  margin-top: 2px;
+  text-shadow: 0 2px 8px #4f8cff99;
+  cursor: pointer;
+  transition: color 0.2s, text-shadow 0.2s;
+  padding: 0 0.07em;
 }
-
-.add-comment-form button[type="submit"] {
-  margin-top: 8px;
-  align-self: flex-end;
+.star-rating input[type="radio"]:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  color: #FFD700;
+  text-shadow: 0 2px 12px #FFD70099;
 }
 
 .overlay-app {
@@ -897,6 +1013,7 @@ body.light-mode .video-bg:before {
   list-style: none;
   padding: 10px 18px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   font-size: 16px;
   width: 100%;
@@ -926,6 +1043,7 @@ body.light-mode .video-bg:before {
 .products {
   display: flex;
   align-items: center;
+  min-width: fit-content;
   width: 150px;
 }
 @media screen and (max-width: 480px) {
@@ -935,8 +1053,7 @@ body.light-mode .video-bg:before {
 }
 
 .status {
-  margin-left: auto;
-  width: 140px;
+  max-width: 450px;
   font-size: 15px;
   position: relative;
 }
@@ -1053,7 +1170,6 @@ body.light-mode .video-bg:before {
   align-items: center;
   justify-content: flex-end;
   width: 187px;
-  margin-left: auto;
 }
 @media screen and (max-width: 480px) {
   .button-wrapper {
@@ -1217,13 +1333,6 @@ body.light-mode .video-bg:before {
   border-radius: 6px;
   margin-right: 12px;
   flex-shrink: 0;
-}
-.app-card .movie-rating > svg {
-  fill: #FFD700;
-  width: 18px;
-  margin-right: 5px;
-  margin-bottom: 4px;
-  vertical-align: middle;
 }
 .app-card + .app-card {
   margin-left: 20px;

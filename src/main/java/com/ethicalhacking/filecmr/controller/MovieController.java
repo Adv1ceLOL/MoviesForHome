@@ -32,6 +32,78 @@ public class MovieController {
         return "redirect:/";
     }
 
+    @GetMapping("/movies/popular")
+    public String getPopularMovies(Model model) {
+
+        List<Movie> popularMovies = movieService.getPopularMovies();
+
+        Map<String, List<Movie>> groupedMovies = popularMovies.stream()
+            .collect(Collectors.groupingBy(Movie::getGenre));
+
+        List<Long> movieIds = popularMovies.stream().map(Movie::getId).toList();
+        Map<Long, Double> avgRatings = reviewService.getAverageRatingsForMovies(movieIds);
+        model.addAttribute("genre2movies", groupedMovies);
+        model.addAttribute("avgRatings", avgRatings);
+
+        List<Movie> allMovies = movieService.getAllMovies();
+        List<String> genres = allMovies.stream()
+            .map(Movie::getGenre)
+            .distinct()
+            .collect(Collectors.toList());
+
+        model.addAttribute("genres", genres);
+
+        return "index";
+    }
+    
+    @GetMapping("/movies/latest")
+    public String getLatestMovies(Model model) {
+
+        List<Movie> popularMovies = movieService.getLatestMovies(2020);
+
+        Map<String, List<Movie>> groupedMovies = popularMovies.stream()
+            .collect(Collectors.groupingBy(Movie::getGenre));
+
+        List<Long> movieIds = popularMovies.stream().map(Movie::getId).toList();
+        Map<Long, Double> avgRatings = reviewService.getAverageRatingsForMovies(movieIds);
+        model.addAttribute("genre2movies", groupedMovies);
+        model.addAttribute("avgRatings", avgRatings);
+
+        List<Movie> allMovies = movieService.getAllMovies();
+        List<String> genres = allMovies.stream()
+            .map(Movie::getGenre)
+            .distinct()
+            .collect(Collectors.toList());
+
+        model.addAttribute("genres", genres);
+
+        return "index";
+    }
+
+    @GetMapping("/movies/upcoming")
+    public String getUpcomingMovies(Model model) {
+
+        List<Movie> popularMovies = movieService.getLatestMovies(2026);
+
+        Map<String, List<Movie>> groupedMovies = popularMovies.stream()
+            .collect(Collectors.groupingBy(Movie::getGenre));
+
+        List<Long> movieIds = popularMovies.stream().map(Movie::getId).toList();
+        Map<Long, Double> avgRatings = reviewService.getAverageRatingsForMovies(movieIds);
+        model.addAttribute("genre2movies", groupedMovies);
+        model.addAttribute("avgRatings", avgRatings);
+
+        List<Movie> allMovies = movieService.getAllMovies();
+        List<String> genres = allMovies.stream()
+            .map(Movie::getGenre)
+            .distinct()
+            .collect(Collectors.toList());
+
+        model.addAttribute("genres", genres);
+
+        return "index";
+    }
+
     @PostMapping("/movies")
     public String getMovieByTitle(@RequestParam String title, Model model) {
         // Recupera i film in base al titolo

@@ -80,7 +80,6 @@ toggleButton.addEventListener('click', () => {
 
 // Show popup
 $(document).on('click', '.add-comment-btn', function() {
-  fillMovieOptions();
   $('.add-comment-popup').css('display', 'flex').hide().fadeIn(150);});
 
 // Hide popup

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.ethicalhacking.filecmr.model.Movie;
 import com.ethicalhacking.filecmr.service.MovieService;
 import com.ethicalhacking.filecmr.service.ReviewService;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @Controller
@@ -46,5 +48,6 @@ public class HomeController {
 
         return "index";
     }
+    
     
 }

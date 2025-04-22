@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MoviesForHome - Movies</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
@@ -46,8 +46,9 @@
                 <input type="text" name="title" placeholder="Search movies...">
               </form>
             </div>
-            <a class="header-profile" href="/login">
+            <a class="header-profile" th:href="${currentUser != null} ? '/logout' : '/login'">
                 <img class="profile-img" src="/images/logo.jpg" alt="">
+                <span class="username-label" th:text="${currentUser != null} ? ${currentUser.username} : 'Guest'"></span>
             </a>
         </div>
         <div class="wrapper">
@@ -64,9 +65,9 @@
               <div class="main-header">
                 <a class="menu-link-main is-active" href="/movies">All Movies</a>
                 <div class="header-menu">
-                  <a class="main-header-link" href="/movies">Popular</a>
-                  <a class="main-header-link" href="/movies">Latest</a>
-                  <a class="main-header-link" href="/movies">Upcoming</a>
+                  <a class="main-header-link" href="/movies/popular">Popular</a>
+                  <a class="main-header-link" href="/movies/latest">Latest</a>
+                  <a class="main-header-link" href="/movies/upcoming">Upcoming</a>
                 </div>
               </div>
               <div class="content-wrapper">
