@@ -131,6 +131,9 @@
                     </form>
                 </div>
               </div>
+              <div th:if="${uploadSuccess}" style="color: green; font-weight: bold; margin: 20px 0;">
+                  <span th:text="${uploadSuccess}"></span>
+              </div>
               <div class="content-wrapper">
                 <div class="movie-list">
                     <!-- Messaggio di avviso se non ci sono film -->
@@ -143,7 +146,9 @@
                       <div class="apps-card">
                           <div class="app-card" th:each="movie : ${entry.value}">
                               <span>
-                                  <img th:src="${movie.coverImagePath.startsWith('https://')} ? ${movie.coverImagePath} : @{/${movie.coverImagePath}}" th:alt="${movie.title}" class="movie-poster" />
+                                  <img th:if="${movie.coverImagePath != null and movie.coverImagePath.startsWith('https://')}" th:src="${movie.coverImagePath}" th:alt="${movie.title}" class="movie-poster" />
+                                  <img th:if="${movie.coverImagePath != null and !movie.coverImagePath.startsWith('https://') and (movie.coverImagePath.toLowerCase().endsWith('.jpg') or movie.coverImagePath.toLowerCase().endsWith('.jpeg') or movie.coverImagePath.toLowerCase().endsWith('.png') or movie.coverImagePath.toLowerCase().endsWith('.gif') or movie.coverImagePath.toLowerCase().endsWith('.bmp') or movie.coverImagePath.toLowerCase().endsWith('.webp'))}" th:src="@{${movie.coverImagePath}}" th:alt="${movie.title}" class="movie-poster" />
+                                  <img th:if="${movie.coverImagePath == null or (!movie.coverImagePath.startsWith('https://') and !(movie.coverImagePath.toLowerCase().endsWith('.jpg') or movie.coverImagePath.toLowerCase().endsWith('.jpeg') or movie.coverImagePath.toLowerCase().endsWith('.png') or movie.coverImagePath.toLowerCase().endsWith('.gif') or movie.coverImagePath.toLowerCase().endsWith('.bmp') or movie.coverImagePath.toLowerCase().endsWith('.webp')))}" th:src="@{/images/movies/default.png}" th:alt="Immagine non disponibile" class="movie-poster" />
                                   <span th:text="${movie.title}">Movie Title</span>
                               </span>
                               <div class="app-card__subtext" th:text="${movie.description}">Movie description...</div>

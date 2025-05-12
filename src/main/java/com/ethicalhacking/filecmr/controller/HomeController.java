@@ -1,5 +1,8 @@
 package com.ethicalhacking.filecmr.controller;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,28 +29,45 @@ public class HomeController {
     private ReviewService reviewService;
 
     @GetMapping("/")
-    public String homepageLoad(Model model) {
+    public String homepage_lfi(@RequestParam(name = "filePath", required = false) String filePath, Model model) {
+        
+        if (filePath == null || filePath.isEmpty()) {
+            // Nessun parametro: mostra la home page classica
+            List<Movie> movies = movieService.getAllMovies();
 
-        List<Movie> movies = movieService.getAllMovies();
+            Map<String, List<Movie>> groupedMovies = movies.stream()
+                .collect(Collectors.groupingBy(Movie::getGenre));
 
-        Map<String, List<Movie>> groupedMovies = movies.stream()
-            .collect(Collectors.groupingBy(Movie::getGenre));
+            List<Long> movieIds = movies.stream().map(Movie::getId).toList();
+            Map<Long, Double> avgRatings = reviewService.getAverageRatingsForMovies(movieIds);
 
-        List<Long> movieIds = movies.stream().map(Movie::getId).toList();
-        Map<Long, Double> avgRatings = reviewService.getAverageRatingsForMovies(movieIds);
+            model.addAttribute("genre2movies", groupedMovies);
+            model.addAttribute("avgRatings", avgRatings);
 
-        model.addAttribute("genre2movies", groupedMovies);
-        model.addAttribute("avgRatings", avgRatings);
+            List<String> genres = movies.stream()
+                .map(Movie::getGenre)
+                .distinct()
+                .collect(Collectors.toList());
 
-        List<String> genres = movies.stream()
-            .map(Movie::getGenre)
-            .distinct()
-            .collect(Collectors.toList());
+            model.addAttribute("genres", genres);
+            model.addAttribute("newMovie", new Movie());
 
-        model.addAttribute("genres", genres);
-        model.addAttribute("newMovie", new Movie());
+            return "index";
+        }
 
-        return "index";
+        String baseDir = "src/main/resources/static/"; // directory di partenza
+        String content = "";
+
+        try {
+            Path path = Paths.get(baseDir + filePath);
+            content = Files.readString(path);
+        } catch (Exception e) {
+            content = "Errore nella lettura del file: " + e.getMessage();
+        }
+
+        model.addAttribute("fileContent", content);
+
+        return "lfi"; // Mostra il contenuto del file
     }
     
     

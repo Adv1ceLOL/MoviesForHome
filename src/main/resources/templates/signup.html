@@ -22,7 +22,7 @@
       <div class="login-wrapper">
         <!-- Back to index button -->
         <a href="/" class="back-to-index">&lt;</a>
-        <form th:if="${currentUser == null}" class="login-form" th:action="@{/login}" method="post">
+        <form th:if="${currentUser == null}" class="login-form" th:action="@{/signup}" method="post">
         <h2>Signup</h2>
                 <label class="profile-image-label" for="profileImageInput">
           <span class="profile-image-btn">Choose Profile Picture</span>

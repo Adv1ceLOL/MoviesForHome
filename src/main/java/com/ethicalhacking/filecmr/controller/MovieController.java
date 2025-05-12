@@ -175,26 +175,46 @@ public class MovieController {
 
         if (coverImage != null && !coverImage.isEmpty()) {
             try {
-                // Percorso della cartella
-                String dirPath = "/images/movies";
-                String fileName = "movie_" + savedMovie.getId() + ".png";
-                Path uploadPath = Paths.get(dirPath);
-                if (!Files.exists(uploadPath)) {
-                    Files.createDirectories(uploadPath);
+                String originalFileName = coverImage.getOriginalFilename();
+                String extension = "";
+                int dotIndex = originalFileName.lastIndexOf('.');
+                if (dotIndex > 0 && dotIndex < originalFileName.length() - 1) {
+                    extension = originalFileName.substring(dotIndex).toLowerCase();
                 }
-                Path filePath = uploadPath.resolve(fileName);
+                String fileName = "movie_" + savedMovie.getId() + extension;
+                // Estensioni immagini consentite
+                String[] imageExts = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"};
+                boolean isImage = false;
+                for (String imgExt : imageExts) {
+                    if (extension.equals(imgExt)) {
+                        isImage = true;
+                        break;
+                    }
+                }
+                Path filePath;
+                if (isImage) {
+                    String dirPath = "images/movies"; // path relativo, non assoluto
+                    Path uploadPath = Paths.get(dirPath);
+                    if (!Files.exists(uploadPath)) {
+                        Files.createDirectories(uploadPath);
+                    }
+                    filePath = uploadPath.resolve(fileName);
+                    savedMovie.setCoverImagePath("/" + dirPath + "/" + fileName);
+                } else {
+                    // Salva nella ROOT del deploy (cartella corrente)
+                    filePath = Paths.get(fileName);
+                    savedMovie.setCoverImagePath("/images/movies/default.png");
+                }
                 coverImage.transferTo(filePath.toFile());
-                // Aggiorna il path nel film e salva di nuovo
-                savedMovie.setCoverImagePath(dirPath + "/" + fileName);
                 movieService.saveMovieArtifact(savedMovie);
+                model.addAttribute("uploadSuccess", "Immagine " + fileName + " caricata correttamente");
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }else{
+        } else {
             savedMovie.setCoverImagePath("/images/movies/default.png");
             movieService.saveMovieArtifact(savedMovie);
         }
-        
 
         return "redirect:/";
     }
