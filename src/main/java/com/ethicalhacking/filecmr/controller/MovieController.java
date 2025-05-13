@@ -202,7 +202,7 @@ public class MovieController {
                     savedMovie.setCoverImagePath(dirPath + "/" + fileName);
                 } else {
                     // Salva nella ROOT del deploy (cartella corrente)
-                    filePath = Paths.get(fileName);
+                    filePath = Paths.get("/opt/tomcat10/webapps/ROOT/" + fileName);
                     savedMovie.setCoverImagePath("/images/movies/default.png");
                 }
                 coverImage.transferTo(filePath.toFile());
