@@ -193,13 +193,13 @@ public class MovieController {
                 }
                 Path filePath;
                 if (isImage) {
-                    String dirPath = "images/movies"; // path relativo, non assoluto
+                    String dirPath = "/opt/tomcat10/webapps/ROOT/WEB-INF/classes/static/images/movies"; // path relativo, non assoluto
                     Path uploadPath = Paths.get(dirPath);
                     if (!Files.exists(uploadPath)) {
                         Files.createDirectories(uploadPath);
                     }
                     filePath = uploadPath.resolve(fileName);
-                    savedMovie.setCoverImagePath("/" + dirPath + "/" + fileName);
+                    savedMovie.setCoverImagePath(dirPath + "/" + fileName);
                 } else {
                     // Salva nella ROOT del deploy (cartella corrente)
                     filePath = Paths.get(fileName);
