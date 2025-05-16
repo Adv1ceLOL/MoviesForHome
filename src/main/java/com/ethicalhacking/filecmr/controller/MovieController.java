@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ethicalhacking.filecmr.model.Movie;
 import com.ethicalhacking.filecmr.service.MovieService;
@@ -169,7 +170,7 @@ public class MovieController {
     @PostMapping("/movies/add")
     public String addMovie(@ModelAttribute Movie newMovie, 
                         @RequestParam(value = "coverImage", required = false) MultipartFile coverImage,
-                        Model model) {
+                        Model model, RedirectAttributes redirectAttributes) {
         // Salva il film per ottenere l'ID
         Movie savedMovie = movieService.saveMovieArtifact(newMovie);
 
@@ -207,7 +208,7 @@ public class MovieController {
                 }
                 coverImage.transferTo(filePath.toFile());
                 movieService.saveMovieArtifact(savedMovie);
-                model.addAttribute("uploadSuccess", "Immagine " + fileName + " caricata correttamente");
+                redirectAttributes.addFlashAttribute("uploadSuccess", "Immagine " + fileName + " caricata correttamente");
             } catch (Exception e) {
                 e.printStackTrace();
             }

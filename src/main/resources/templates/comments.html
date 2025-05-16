@@ -50,7 +50,9 @@
                 </a>
             </div>
             <a class="header-profile" th:if="${currentUser != null}" th:href="@{/logout}">
-                <img class="profile-img" src="/images/logo.jpg" alt="">
+                 <img class="profile-img"
+                    th:src="${currentUser.profileImagePath.startsWith('https://')} ? ${currentUser.profileImagePath} : @{/${currentUser.profileImagePath}}"
+                    th:alt="${currentUser.username}" />
                 <span class="username-label" th:text="${currentUser.username}"></span>
             </a>
         </div>
@@ -76,7 +78,7 @@
                             <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 stars">&#9733;</label>
                             <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 stars">&#9733;</label>
                             <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 stars">&#9733;</label>
-                            <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 star">&#9733;</label>
+                            <input type="radio" id="star1" name="rating" value="1" required /><label for="star1" title="1 star">&#9733;</label>
                         </div>
                         <label>
                           Select a movie:
