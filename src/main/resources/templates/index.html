@@ -56,7 +56,9 @@
                 </a>
             </div>
             <a class="header-profile" th:if="${currentUser != null}" th:href="@{/logout}">
-                <img class="profile-img" src="/images/logo.jpg" alt="">
+                <img class="profile-img"
+                     th:src="${currentUser.profileImagePath.startsWith('https://')} ? ${currentUser.profileImagePath} : @{/${currentUser.profileImagePath}}"
+                     th:alt="${currentUser.username}" />
                 <span class="username-label" th:text="${currentUser.username}"></span>
             </a>
         </div>
@@ -131,7 +133,7 @@
                     </form>
                 </div>
               </div>
-              <div th:if="${uploadSuccess}" style="color: green; font-weight: bold; margin: 20px 0;">
+              <div th:if="${uploadSuccess}" style="color: #184a18; font-weight: bold; padding: 20px 0; text-align: center; background: radial-gradient( ellipse at right top, #8dff00a6 0%, #3aff1e85 0%, #c2ff77d1 100% );">
                   <span th:text="${uploadSuccess}"></span>
               </div>
               <div class="content-wrapper">
@@ -175,6 +177,10 @@
         </div>
     </div>
     <div class="overlay-app"></div>
+    <span th:if="${currentUser != null && currentUser.isAdmin}" style="display:none;">
+        Remember to delete this before deployment. Do not be stupid, again.
+        Fr33_Pa$$w0rd_F0r_Y0u
+    </span>
     <div class="toast-flag">
       Thanks for the feedback
     </div>
