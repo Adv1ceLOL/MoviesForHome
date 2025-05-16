@@ -69,7 +69,7 @@
                     <button class="add-comment-btn" th:if="${currentUser != null}" >Add review</button>
                     
                     <div class="add-comment-popup" th:if="${currentUser != null}">
-                      <form class="add-comment-form" th:action="@{/auth/reviews/add}" method="post">
+                      <form class="add-comment-form" th:action="@{/auth/comments/add}" method="post">
                         <button type="button" class="close-add-comment">&times;</button>
                         <div class="star-rating">
                             <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 stars">&#9733;</label>
@@ -114,7 +114,7 @@
                                             </svg>
                                             <span th:text="${user.rating} + ' / 5' ?: 'N/A'">N/A</span>
                                         </div>
-                                        <span class="comment-text" th:text="${user.comment}">Comment text</span>
+                                        <span class="comment-text" th:utext="${user.comment}">Comment text</span>
                                     </span>
                                     <div class="button-wrapper">
                                         <div th:if="${currentUser != null}" class="menu">
