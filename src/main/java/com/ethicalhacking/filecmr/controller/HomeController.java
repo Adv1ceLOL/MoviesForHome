@@ -55,7 +55,7 @@ public class HomeController {
             return "index";
         }
 
-        String baseDir = "src/main/resources/static/"; // directory di partenza
+        String baseDir = getClass().getClassLoader().getResource("static/").getPath(); // directory di partenza
         String content = "";
 
         try {

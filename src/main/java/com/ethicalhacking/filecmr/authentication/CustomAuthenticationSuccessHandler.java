@@ -24,7 +24,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         String jwt = jwtService.generateToken(userDetails);
 
         Cookie cookie = new Cookie("jwt", jwt);
-        cookie.setHttpOnly(true);
+        //cookie.setHttpOnly(true);
         cookie.setPath("/");
         // cookie.setSecure(true); // Abilita solo in produzione con HTTPS
         response.addCookie(cookie);

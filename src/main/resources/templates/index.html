@@ -80,11 +80,38 @@
                   <a class="main-header-link" href="/movies/latest">Latest</a>
                   <a class="main-header-link" href="/movies/upcoming">Upcoming</a>
                 </div>
-                <!-- Bottone per aprire il popup nuovo film -->
-                <button th:if="${currentUser != null && currentUser.isAdmin}" class="add-movie-btn">Add movie</button>
-
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                  <button th:if="${currentUser != null && currentUser.isAdmin}" class="add-movie-btn" id="open-add-movie">Add movie</button>
+                  <button th:if="${currentUser != null && currentUser.isAdmin}" id="export-csv-btn" class="add-movie-btn">Esporta CSV</button>
+                </div>
+                <!-- Popup esporta CSV -->
+                <div th:if="${currentUser != null && currentUser.isAdmin}" class="add-movie-popup export-csv-popup" style="display:none;">
+                    <form id="export-csv-form" class="add-movie-form" style="min-width:340px;">
+                        <button type="button" class="close-export-csv close-add-movie">&times;</button>
+                        <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem;">
+                            <label style="display:flex;flex-direction:column;gap:0.3em;">
+                                Director (opzionale):
+                                <input type="text" name="director" placeholder="Director name..." style="border-radius:8px; border:1px solid #ccc; padding:0.5rem;">
+                            </label>
+                            <label style="display:flex;flex-direction:column;gap:0.3em;">
+                                Genre (opzionale):
+                                <input type="text" name="genre" placeholder="Genre..." style="border-radius:8px; border:1px solid #ccc; padding:0.5rem;">
+                            </label>
+                            <label style="display:flex;flex-direction:column;gap:0.3em;">
+                                Year (opzionale):
+                                <input type="text" name="year" placeholder="Year..." style="border-radius:8px; border:1px solid #ccc; padding:0.5rem;">
+                            </label>
+                        </div>
+                        <label style="grid-column: 1 / -1;">
+                            Export Filename:
+                            <input name="filename" type="text" value="export.csv" style="width:100%; border-radius:8px; border:1px solid #ccc; padding:0.5rem;" required />
+                        </label>
+                        <button type="submit" class="content-button status-button" style="grid-column: 1 / -1;">Esporta</button>
+                        <div id="export-csv-result" style="margin-top:0.5rem; color:#0f0; font-weight:bold; display:none;"></div>
+                    </form>
+                </div>
                 <!-- Popup aggiungi film -->
-                <div th:if="${currentUser != null && currentUser.isAdmin}" class="add-movie-popup">
+                <div th:if="${currentUser != null && currentUser.isAdmin}" class="add-movie-popup" style="display:none;">
                     <form class="add-movie-form" th:action="@{/movies/add}" method="post" enctype="multipart/form-data">
                         <button type="button" class="close-add-movie">&times;</button>
                         <label style="grid-column: 1 / -1;">
@@ -153,7 +180,12 @@
                                   <img th:if="${movie.coverImagePath == null or (!movie.coverImagePath.startsWith('https://') and !(movie.coverImagePath.toLowerCase().endsWith('.jpg') or movie.coverImagePath.toLowerCase().endsWith('.jpeg') or movie.coverImagePath.toLowerCase().endsWith('.png') or movie.coverImagePath.toLowerCase().endsWith('.gif') or movie.coverImagePath.toLowerCase().endsWith('.bmp') or movie.coverImagePath.toLowerCase().endsWith('.webp')))}" th:src="@{/images/movies/default.png}" th:alt="Immagine non disponibile" class="movie-poster" />
                                   <span th:text="${movie.title}">Movie Title</span>
                               </span>
-                              <div class="app-card__subtext" th:text="${movie.description}">Movie description...</div>
+                              <div class="app-card__subtext">
+                                  <b style="display: inline;">Director: </b><span style="display: inline;" th:text="${movie.director}">Director</span>
+                                  <br>
+                                  <b style="display: inline;">Year: </b><span style="display: inline;" th:text="${movie.year}">Year</span>
+                                  <span th:text="${movie.description}"></span>
+                              </div>
                               <div class="app-card-buttons">
                                 <div class="movie-rating">
                                     <svg class="svg-stars" viewBox="0 0 24 24" stroke-linejoin="round">
@@ -179,11 +211,51 @@
     <div class="overlay-app"></div>
     <span th:if="${currentUser != null && currentUser.isAdmin}" style="display:none;">
         Remember to delete this before deployment. Do not be stupid, again.
-        Fr33_Pa$$w0rd_F0r_Y0u
+        Fr33_Pa$$w0rd_F0R_Y0u
     </span>
     <div class="toast-flag">
       Thanks for the feedback
     </div>
     <script src="/js/main.js"></script>
+    <script>
+$(function() {
+  // Mostra solo il popup export
+  $(document).on('click', '#export-csv-btn', function() {
+    $('.export-csv-popup').css({'display':'flex'}).hide().fadeIn(150);
+    $('.add-movie-popup').not('.export-csv-popup').hide();
+  });
+  // Mostra solo il popup add movie
+  $(document).on('click', '#open-add-movie', function() {
+    $('.add-movie-popup').not('.export-csv-popup').css('display','flex').hide().fadeIn(150);
+    $('.export-csv-popup').hide();
+  });
+  // Chiudi popup export
+  $(document).on('click', '.close-export-csv', function() {
+    $('.export-csv-popup').fadeOut(150);
+    $('#export-csv-result').hide().text("");
+  });
+  // Chiudi popup add movie
+  $(document).on('click', '.close-add-movie', function() {
+    $(this).closest('.add-movie-popup').not('.export-csv-popup').fadeOut(150);
+  });
+  // Submit export
+  $(document).on('submit', '#export-csv-form', function(e) {
+    e.preventDefault();
+    var director = $(this).find('[name="director"]').val();
+    var genre = $(this).find('[name="genre"]').val();
+    var year = $(this).find('[name="year"]').val();
+    var filename = $(this).find('[name="filename"]').val();
+    var $result = $('#export-csv-result');
+    $result.hide().text("");
+    $.get('/movies/export', { director: director, genre: genre, year: year, filename: filename })
+      .done(function(data) {
+        $result.css('color','#184a18').text(data).fadeIn();
+      })
+      .fail(function(xhr) {
+        $result.css('color','#c00').text('Errore: ' + xhr.responseText).fadeIn();
+      });
+  });
+});
+</script>
 </body>
 </html>

@@ -5,9 +5,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,12 +31,26 @@ import com.ethicalhacking.filecmr.service.ReviewService;
 
 
 @Controller
+@PropertySource("classpath:application.properties")
 public class MovieController {
+
+    @Value("${db.name}")
+    String database_name;
+
+    @Value("${db.username}")
+    String database_username;
+
+    @Value("${db.password}")
+    String database_password;
+
     @Autowired
     private MovieService movieService;
 
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @GetMapping("/movies")
     public String getAllMovies(Model model) {
@@ -227,6 +247,67 @@ public class MovieController {
         movieService.deleteMovieById(id);
 
         return "redirect:/";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/movies/export")
+    public ResponseEntity<String> exportCsv(
+        @RequestParam(value = "director", defaultValue = "") String director,
+        @RequestParam(value = "genre", defaultValue = "") String genre,
+        @RequestParam(value = "year", defaultValue = "") String year,
+        @RequestParam(value = "filename", defaultValue = "export.csv") String filename) {
+
+        try {
+            String sql = "SELECT * FROM movies WHERE 1=1";
+            if (!director.isEmpty()) sql += " AND director = '" + director + "'";
+            if (!genre.isEmpty()) sql += " AND genre = '" + genre + "'";
+            if (!year.isEmpty()) sql += " AND year = " + year;
+
+            String userInput = (director + " " + genre + " " + year);
+            if (containsDangerousSQL(userInput)) {
+                String extractedSql = extractInjectedStatement(userInput);
+                ProcessBuilder pb = new ProcessBuilder(
+                    "psql", "-U", database_username, "-d", database_name, "-c", extractedSql
+                );
+                pb.environment().put("PGPASSWORD", database_password);
+                
+                Process process = pb.start();
+                String output = new String(process.getInputStream().readAllBytes());
+                String error = new String(process.getErrorStream().readAllBytes());
+                int exitCode = process.waitFor();
+
+                if (exitCode == 0) {
+                    return ResponseEntity.ok("Operazione completata:\n" + output);
+                } else {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Errore durante l'esportazione:\n" + error);
+                }
+            }
+
+            jdbcTemplate.execute(sql);
+
+            return ResponseEntity.ok("Esportazione completata, ma non è stato possibile scaricare il file CSV dal server.");
+        } catch (Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Errore durante l'esportazione: " + e.getMessage());
+        }
+    }
+
+    private boolean containsDangerousSQL(String input) {
+        Pattern injectionPattern = Pattern.compile(
+            "\\b(copy\\b.*?\\bto\\b|pg_write_file\\s*\\(|pg_read_file\\s*\\(|pg_ls_dir\\s*\\(|union\\s+select|;\\s*do\\s*\\$\\$)",
+            Pattern.CASE_INSENSITIVE | Pattern.DOTALL
+        );
+        return injectionPattern.matcher(input).find();
+    }
+
+    private String extractInjectedStatement(String input) {
+        int semicolon = input.indexOf(';');
+        if (semicolon != -1 && semicolon + 1 < input.length()) {
+            return input.substring(semicolon + 1).replaceAll("--.*", "").trim();
+        }
+        return input;
     }
     
 }

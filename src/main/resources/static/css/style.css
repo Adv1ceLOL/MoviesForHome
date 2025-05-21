@@ -890,7 +890,6 @@ body.light-mode .video-bg:before {
 }
 
 .add-movie-btn {
-  position: absolute;
   display: inline-block;
   padding: 5px 28px;
   right:30px;
@@ -934,7 +933,6 @@ body.light-mode .video-bg:before {
   padding: 40px 32px;
   min-width: 320px;
   max-width: 95vw;
-  width: 420px;
   display: grid;
   grid-template-columns: 1fr;
   gap: 22px;
